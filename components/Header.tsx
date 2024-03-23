@@ -65,6 +65,7 @@ export function Header({children}) {
 
   const items = tabs.map((tab) => (
     <Tabs
+    key={tab.label} 
     color="gray" variant="pills" 
     radius="md"
     // value={tabValue}
