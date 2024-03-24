@@ -20,8 +20,10 @@ import { Button } from "./ui/button";
 
 import { useWindowWidth } from "@react-hook/window-size";
 import Home from "@/app/page";
-
-export default function SideNavbar({signOut}: Props) {
+interface BLa {
+  signOut: () => Promise<void>;
+}
+  export default function SideNavbar({signOut }: BLa) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
   const onlyWidth = useWindowWidth();

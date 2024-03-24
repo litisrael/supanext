@@ -32,9 +32,10 @@ export default async function RootLayout({
     data: { user },
   } = await supabase.auth.getUser();
 
-  // if (!user) {
-  //   return redirect("/login");
-  // }
+
+ 
+    
+  
   return (
     <html lang="en">
       {!user ? (
@@ -53,7 +54,7 @@ export default async function RootLayout({
           )}
         >
           {
-           <SideNavbar signOut={signOut} />
+           <SideNavbar signOut={signOut}  />
               
           
           }

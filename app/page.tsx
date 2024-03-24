@@ -3,6 +3,7 @@
 
 
 
+import { createClient } from "@/utils/supabase/server";
 import PageTitle from "@/components/PageTitle";
 import Image from "next/image";
 import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
@@ -12,6 +13,8 @@ import SalesCard, { SalesProps } from "@/components/SalesCard";
 import { Calendar } from "@/components/ui/calendar"
 import { DatePickerWithRange } from "@/components/ui/datePickerRange";
 import {ComboboxDemo  } from "../components/ui/comboboxDemo";
+import { SelectOptionComponent } from "./querydata";
+
 const cardData: CardProps[] = [
   {
     label: "Total Revenue",
@@ -67,14 +70,30 @@ const uesrSalesData: SalesProps[] = [
   }
 ];
 
-export default function Home() {
+export default async function Home() {
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc('maxymindates');
+  const firstData = data && data[0];
+
+  if (!firstData) {
+    console.log(error);
+    
+    throw new Error('Error al conectar con la base de datos');
+  }
+
+  const { mindate, maxdate } = firstData;
+  // console.log('Fechas min:', mindate, 'Fechas max:', maxdate);
+ 
+
   return (
     <div className="flex flex-col gap-5  w-full">
       <PageTitle title="Dashboard" />
       
       {/* <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-2"> */}
 
-      <DatePickerWithRange />
+      {/* <DatePickerWithRange /> */}
+      
+      < SelectOptionComponent  />
       <ComboboxDemo />
       {/* </section> */}
   
