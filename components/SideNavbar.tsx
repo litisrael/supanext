@@ -14,7 +14,8 @@ import {
   Settings,
   ChevronRight,
   LogOut,
-  Home as HomeIcon
+  Home as HomeIcon,
+  BarChart 
 } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -68,6 +69,12 @@ interface BLa {
             href: "/",
             icon: HomeIcon,
             variant: "default"
+          },
+          {
+            title: "charat",
+            href: "/charat",
+            icon: BarChart,
+            variant: "ghost"
           },
           {
             title: "Users",
