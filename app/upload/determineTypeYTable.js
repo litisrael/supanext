@@ -28,6 +28,8 @@ export async function determineTypeYTables(table) {
     gift:[]
   };
 
+
+  
   
   for (let line = 0; line < filteredTable.length; line++) {
     const currentOrder = { ...filteredTable[line] };
