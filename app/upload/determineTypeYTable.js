@@ -9,7 +9,7 @@ export async function determineTypeYTables(table) {
 
   console.log("id", user.id);
 
-  
+
   if (!user) {
     console.error("Usuario no encontrado");
     return; // Salir de la función si el usuario no está definido
@@ -28,6 +28,8 @@ export async function determineTypeYTables(table) {
     gift:[]
   };
 
+
+  
   for (let line = 0; line < filteredTable.length; line++) {
     const currentOrder = { ...filteredTable[line] };
 
