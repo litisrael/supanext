@@ -71,6 +71,12 @@ interface BLa {
             variant: "default"
           },
           {
+            title: "Upload",
+            href: "/upload",
+            icon: Settings,
+            variant: "ghost"
+          },
+          {
             title: "charat",
             href: "/charat",
             icon: BarChart,

@@ -8,9 +8,18 @@ export default function Page() {
   const [notes, setNotes] = useState<any[] | null>(null)
   const supabase = createClient()
 
+
   useEffect(() => {
     const getData = async () => {
-      const { data } = await supabase.from('notes').select()
+      const { data } = await supabase.from('main_orders').select()
+      
+
+      const user = await supabase.auth.getUser();
+      console.log("supabase.auth",supabase.auth)
+// console.log(supabase) // Outputs the user's UUID
+
+    
+      
       setNotes(data)
     }
     getData()
