@@ -8,6 +8,7 @@ export async function determineTypeYTables(table) {
   const { data: { user } } = await supabase.auth.getUser();
 
   console.log("id", user.id);
+  
   if (!user) {
     console.error("Usuario no encontrado");
     return; // Salir de la función si el usuario no está definido
