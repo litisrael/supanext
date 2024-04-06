@@ -3,8 +3,8 @@
 import { createClient } from '@/utils/supabase/client'
 
 export async function determineTypeYTables(table) {
-  
   const supabase = createClient();
+  
   const { data: { user } } = await supabase.auth.getUser();
 
   console.log("id", user.id);
@@ -29,7 +29,7 @@ export async function determineTypeYTables(table) {
   };
 
 
-  
+
   
   for (let line = 0; line < filteredTable.length; line++) {
     const currentOrder = { ...filteredTable[line] };
@@ -110,19 +110,19 @@ export async function determineTypeYTables(table) {
       sku: currentOrder.sku,
     });
 
+    if (currentOrder.item_tax !== null) {
+      tables.itemTax.push({
+        fk: currentOrder.id,
+        item_tax: currentOrder.item_tax, // Ajusta esto según la propiedad que necesitas de la tabla item_tax
+      });
+    }
     if (currentOrder.order_channel !== null) {
       tables.orderChannel.push({
-        id: currentOrder.id,
+        fk: currentOrder.id,
         order_channel: currentOrder.order_channel,
       });
     }
 
-    if (currentOrder.item_tax !== null) {
-      tables.itemTax.push({
-        id: currentOrder.id,
-        item_tax: currentOrder.item_tax, // Ajusta esto según la propiedad que necesitas de la tabla item_tax
-      });
-    }
 
     // Insertar en la tabla shipping_data
     if (
@@ -132,10 +132,9 @@ export async function determineTypeYTables(table) {
       currentOrder.price_designation !== null
     ) {
       tables.shippingData.push({
-        id: currentOrder.id,
+        fk: currentOrder.id,
         shipping_price: currentOrder.shipping_price,
         shipping_tax: currentOrder.shipping_tax,
-
         purchase_order_number: currentOrder.purchase_order_number,
         price_designation: currentOrder.price_designation,
       });
