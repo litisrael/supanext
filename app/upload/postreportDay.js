@@ -4,6 +4,8 @@ import { createClient } from "../../utils/supabase/client.ts";
 
 export const uploadData = async (dataToInsert) => {
   const supabase = createClient();
+  
+
 
   if (!dataToInsert) {
     console.error("No hay datos válidos para insertar.");
@@ -11,6 +13,7 @@ export const uploadData = async (dataToInsert) => {
   }
 
   try {
+    console.log("dataToInsert",dataToInsert);
     // Insertar datos en la tabla principal (por ejemplo, "main_orders")
     const { data: mainData, error: mainError } = await supabase
       .from("main_orders")
@@ -46,6 +49,29 @@ export const uploadData = async (dataToInsert) => {
     }
 
     console.log('Inserción exitosa en la tabla "shipping_data" en Supabase. Registros insertados:', shippingData);
+
+      
+    const { data: promotionData, error: promotionError } = await supabase
+      .from("promotion")
+      .upsert(dataToInsert.promotion)
+      .select();
+
+    if (promotionError) {
+      throw new Error('Error al insertar datos en la tabla "promotion" en Supabase: ' + promotionError.message);
+    }
+
+    console.log('Inserción exitosa en la tabla "promotion" en Supabase. Registros insertados:', promotionData);
+
+    const { data: giftData, error: giftError } = await supabase
+    .from("gift")
+    .upsert(dataToInsert.gift)
+    .select();
+
+  if (giftError) {
+    throw new Error('Error al insertar datos en la tabla "gift" en Supabase: ' + giftError.message);
+  }
+
+  console.log('Inserción exitosa en la tabla "gift" en Supabase. Registros insertados:', giftData);
 
   } catch (error) {
     console.error(error.message);

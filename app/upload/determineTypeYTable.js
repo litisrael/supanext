@@ -146,7 +146,7 @@ export async function determineTypeYTables(table) {
       currentOrder.promotion_ids !== null
     ) {
       tables.promotion.push({
-   
+        fk: currentOrder.id,
         item_promotion_discount: currentOrder.item_promotion_discount,
         ship_promotion_discount: currentOrder.ship_promotion_discount,
         promotion_ids: currentOrder.promotion_ids,
@@ -154,11 +154,13 @@ export async function determineTypeYTables(table) {
     }
   
 
+
   if (
     currentOrder.gift_wrap_price !== null ||
     currentOrder.gift_wrap_tax !== null 
   ) {
     tables.gift.push({
+      fk: currentOrder.id,
       gift_wrap_price: currentOrder.gift_wrap_price,
       gift_wrap_tax: currentOrder.gift_wrap_tax,
   
