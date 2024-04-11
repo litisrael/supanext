@@ -6,10 +6,10 @@ import { useEffect, useState } from "react";
 import Card, { CardContent, CardProps } from "@/components/Card";
 import BarChart from "@/components/BarChart";
 // Definición del tipo para un rango de fechas
-type DateRange = {
-    startDate?: Date;
-    endDate?: Date;
-  };
+// type DateRange = {
+//     startDate?: Date;
+//     endDate?: Date;
+//   };
   
 type DateObject = {
     before?: Date;
@@ -23,31 +23,37 @@ type DateObject = {
 
 
     const [RangeDates, setRangeDates] = useState<RangeDates>();
-    const [selectedDays, SetselectedDays] = useState<DateRange | null>(null);
+    const [selectedDays, SetselectedDays] = useState<DateObject | null>(null);
 // console.log("RangeDates",RangeDates);
 // console.log("selectedDays",selectedDays);
 
 
     // Función para recibir los datos del hijo
-    const receiveSelectedDays = (data: DateRange | undefined) => {
+    const receiveSelectedDays = (data: DateObject | undefined) => {
         SetselectedDays(data ?? null);
     };
   
 
   const supabase = createClientComponentClient();
+
   useEffect(() => {
     const fetchDataRangeDates = async () => {
       try {
-        const { data, error } = await supabase.rpc("maxymindates");
+        const { data: { user } } = await supabase.auth.getUser();
+    
+        // const { data, error } = await supabase.rpc("maxymindates");
+        const { data, error } = await supabase.rpc("obtener_fechas_disponibles_por_id",{ id_argumento:user.id });
         if (error) {
           throw new Error("Error al obtener las fechas");
         }
+        console.log("dataa ", data);
+        
         if (data && data.length > 0) {
-          const { mindate, maxdate } = data[0];
+          const { fecha_minima, fecha_maxima } = data[0];
 
           setRangeDates([
-            { before: new Date(mindate) },
-            { after: new Date(maxdate) },
+            { before: new Date(fecha_minima) },
+            { after: new Date(fecha_maxima) },
           ]);
         }
       } catch (error) {

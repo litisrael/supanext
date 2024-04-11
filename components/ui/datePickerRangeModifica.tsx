@@ -18,7 +18,7 @@ type DateObject = {
     before?: Date;
     after?: Date;
   };
-const customDateFormatter = (date) => format(date, 'yyyy/MM/dd');
+// const customDateFormatter = (date) => format(date, 'yyyy/MM/dd');
 
 export function DatePickerWithRange({
   className,
