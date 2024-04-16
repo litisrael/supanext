@@ -2,67 +2,66 @@
 "use client";
 import React from "react";
 import {
-  BarChart as BarGraph,
+  LineChart as BarGraph,
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Bar
+  Bar,Line,
 } from "recharts";
+// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 type Props = {};
 
 const data = [
   {
-    name: "Jan",
-    total: Math.floor(Math.random() * 5000) + 1000
+    name: 'Page A',
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
   },
   {
-    name: "Feb",
-    total: Math.floor(Math.random() * 5000) + 1000
+    name: 'Page B',
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
   },
   {
-    name: "Mar",
-    total: Math.floor(Math.random() * 5000) + 1000
+    name: 'Page C',
+    uv: 2000,
+    pv: 9800,
+    amt: 2290,
   },
   {
-    name: "Apr",
-    total: Math.floor(Math.random() * 5000) + 1000
+    name: 'Page D',
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
   },
   {
-    name: "May",
-    total: Math.floor(Math.random() * 5000) + 1000
+    name: 'Page E',
+    uv: 1890,
+    pv: 4800,
+    amt: 2181,
   },
   {
-    name: "Jun",
-    total: Math.floor(Math.random() * 5000) + 1000
+    name: 'Page F',
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
   },
   {
-    name: "Jul",
-    total: Math.floor(Math.random() * 5000) + 1000
+    name: 'Page G',
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
   },
-  {
-    name: "Aug",
-    total: Math.floor(Math.random() * 5000) + 1000
-  },
-  {
-    name: "Sep",
-    total: Math.floor(Math.random() * 5000) + 1000
-  },
-  {
-    name: "Oct",
-    total: Math.floor(Math.random() * 5000) + 1000
-  },
-  {
-    name: "Nov",
-    total: Math.floor(Math.random() * 5000) + 1000
-  },
-  {
-    name: "Dec",
-    total: Math.floor(Math.random() * 5000) + 1000
-  }
 ];
 
-export default function BarChart({}: Props) {
+export default function BarChart(
+  // {data}
+{}: Props) {
+  // console.log("dentro de charat", data);
+  
   return (
     <ResponsiveContainer width={"100%"} height={350}>
       <BarGraph data={data}>
@@ -81,6 +80,8 @@ export default function BarChart({}: Props) {
           tickFormatter={(value) => `$${value}`}
         />
         <Bar dataKey={"total"} radius={[4, 4, 0, 0]} />
+        <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
+          <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
       </BarGraph>
     </ResponsiveContainer>
   );

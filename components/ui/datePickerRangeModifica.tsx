@@ -30,11 +30,32 @@ export function DatePickerWithRange({
   sendDataToParent: (data: DateRange | undefined) => void;
 } ) {
 
-  const [date, setDate] = React.useState<DateRange | undefined>({
-    from: new Date(2023, 10, 17),
+  const [date, setDate] = React.useState<DateRange | undefined >({
+    from: undefined,
+    // from: new Date(2023, 10, 17),
     // to: new Date(2022, 0, 20),
   })
   
+
+  useEffect(() => {
+    const updateDates = async () => {
+      if (RangeDates) {
+        try {
+          // Assuming RangeDates is an array of Date objects
+          // const fromDate = RangeDates[0];
+          const lastdate = RangeDates[1].after 
+          setDate({ from: lastdate, 
+            to: lastdate
+           });
+        } catch (error) {
+          console.error('Error fetching RangeDates:', error);
+        }
+      }
+    };
+
+    updateDates();
+  }, [RangeDates]); // Dependency array ensures useEffect runs when RangeDates changes
+
   useEffect(() => {
     let from = null;
     let to = null;
@@ -49,6 +70,7 @@ export function DatePickerWithRange({
       }
   
     }
+    
     sendDataToParent({  from,  to });
 
    
