@@ -1,7 +1,7 @@
 "use client";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { DatePickerWithRange } from "@/components/ui/datePickerRangeModifica";
-import { ComboboxDemo } from "@/components/ui/comboboxDemo";
+import { MenuCheckbox } from "@/components/ui/comboboxDemo";
 import { useEffect, useState } from "react";
 import Card, { CardContent, CardProps } from "@/components/Card";
 import BarChart from "@/components/BarChart";
@@ -140,7 +140,7 @@ const HandelClientsComponents = () => {
           RangeDates={RangeDates}
           sendDataToParent={receiveSelectedDays}
         />
-        <ComboboxDemo
+        <MenuCheckbox
         //  selectedData={selectedData}
           />
       </section>
