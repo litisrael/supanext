@@ -29,7 +29,17 @@ const HandelClientsComponents = () => {
   const [RangeDates, setRangeDates] = useState<RangeDates>();
   const [selectedDays, SetselectedDays] = useState< DateObject | null>(null);
   const [selectedData, setSelectedData] = useState<any>([]);
-  // const [dataSeparatedByGroups, setDataSeparatedByGroups] = useState<any>([]);
+  const [checkedValues, setCheckedValues] = useState([]);
+  
+  console.log("dentro del padre",checkedValues);
+
+
+  // Función de devolución de llamada para manejar cambios en los valores chequeados
+  const handleValueChange = (newValues) => {
+    setCheckedValues(newValues);
+
+    
+  };
   console.log("selectedData", selectedData);
 
 
@@ -56,10 +66,7 @@ const HandelClientsComponents = () => {
           { id_argumento: user.id }
         );
 
-        console.log("datafechas",data);
-        const { data: skuData, error: skuError } = await supabase.rpc("obtener_sku", { id_argumento: user.id });
-        console.log("skuData",skuData);
-        
+       
         if (error) {
           throw new Error("Error al obtener las fechas");
         }
@@ -71,6 +78,9 @@ const HandelClientsComponents = () => {
             { after: new Date(fecha_maxima) },
           ]);
         }
+
+       
+     
       } catch (error) {
         console.error(error);
       }
@@ -217,7 +227,7 @@ const HandelClientsComponents = () => {
           sendDataToParent={receiveSelectedDays}
         />
         <MenuCheckbox
-        //  dataSeparatedByGroups={dataSeparatedByGroups}
+        onValueChange={handleValueChange}
           />
       </section>
       <CardContent>
