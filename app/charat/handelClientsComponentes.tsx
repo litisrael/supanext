@@ -29,13 +29,12 @@ const HandelClientsComponents = () => {
   const [RangeDates, setRangeDates] = useState<RangeDates>();
   const [selectedDays, SetselectedDays] = useState< DateObject | null>(null);
   const [selectedData, setSelectedData] = useState<any>([]);
-  const [checkedValues, setCheckedValues] = useState([]);
-  
+  const [checkedValues, setCheckedValues] = useState<string[]>([]); 
   console.log("dentro del padre",checkedValues);
 
 
   // Función de devolución de llamada para manejar cambios en los valores chequeados
-  const handleValueChange = (newValues) => {
+  const handleValueChange = (newValues: string[]) => {
     setCheckedValues(newValues);
 
     
@@ -56,7 +55,7 @@ const HandelClientsComponents = () => {
         const {
           data: { user },
         } = await supabase.auth.getUser();
-
+        if (!user) return;
         // const { data, error } = await supabase.rpc("maxymindates");
         const { data, error } = await supabase.rpc(
           "obtener_fechas_disponibles_por_id",

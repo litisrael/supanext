@@ -14,6 +14,11 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
+interface RangeDates {
+  from: Date | null;
+  to: Date | null;
+}
+
 type DateObject = {
     before?: Date;
     after?: Date;

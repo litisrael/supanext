@@ -1,5 +1,3 @@
-"use client";
-
 import { Check, ChevronsUpDown, ChevronsDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -45,6 +43,7 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
           { id_argumento: user.id }
         );
         setFetchSku(skuData);
+        
         if (skuError) {
           throw new Error("Error al obtener las sku");
         }
@@ -56,14 +55,15 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
     fetchSkuData();
   }, []);
 
-  // Función para obtener las dos primeras letras de una cadena
-  const obtenerDosPrimerasLetras = (str) => {
-    if (str) {
-      // Comprobar si str existe
-      return str.substring(0, 2);
-    } else {
-      return ""; // Devolver una cadena vacía si str es undefined
-    }
+  const initializeCheckedValues = () => {
+    const initialCheckedValues: string[] = [];
+    Object.values(grupos).forEach((groupItems) => {
+      groupItems.forEach((item) => {
+        initialCheckedValues.push(item.value);
+      });
+    });
+    setValueChequed(initialCheckedValues);
+    onValueChange(initialCheckedValues);
   };
 
   useEffect(() => {
@@ -94,11 +94,23 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
       return acc;
     }, {});
     setGrupos(grupos);
+    
   }, [fetchSku]); // Este efecto se ejecutará cada vez que fetchSku cambie
 
   useEffect(() => {
+    initializeCheckedValues();
+  }, [grupos]); // Este efecto se ejecutará cada vez que grupos cambie
+  useEffect(() => {
     onValueChange(valueChequed);
   }, [valueChequed]);
+  const obtenerDosPrimerasLetras = (str: string | undefined) => {
+    if (str) {
+      // Comprobar si str existe
+      return str.substring(0, 2);
+    } else {
+      return ""; // Devolver una cadena vacía si str es undefined
+    }
+  };
 
   const toggleGroupSelection = (groupLabel: string) => {
     setOpenGroups((prevOpenGroups) => ({
@@ -107,7 +119,7 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
     }));
   };
 
-  const toggleAllFrameworks = (groupSku: Sku[] ) => {
+  const toggleAllSku = (groupSku: Sku[] ) => {
     const allGroupSkuValues = groupSku.map(
       (framework) => framework.value
     );
@@ -161,7 +173,7 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
                   )}
                   className={cn("mr-2 h-4 w-4")}
                   onClick={(e) => e.stopPropagation()}
-                  onCheckedChange={() => toggleAllFrameworks(groupItems)}
+                  onCheckedChange={() => toggleAllSku(groupItems)}
                 />
                 {groupName}
                 <ChevronsDown
