@@ -43,9 +43,6 @@ const HandelClientsComponents = () => {
   console.log("selectedData", selectedData);
 
 
-  // console.log("dataSeparatedByGroups",dataSeparatedByGroups);
-  
-
   // Función para recibir los datos del hijo
   const receiveSelectedDays = (data: DateObject | undefined | null) => {
     SetselectedDays(data ?? null);
