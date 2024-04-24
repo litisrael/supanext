@@ -57,10 +57,26 @@ const data = [
   },
 ];
 
-export default function BarChart(
+export default function LineChart(
   // {data}
 {}: Props) {
   // console.log("dentro de charat", data);
+    const todasLasPropiedadesSet = new Set();
+  const colorArray = [ 'indigo',
+  'blue',
+  'teal',
+  'red',
+  'pink',
+  'grape',
+  'violet',
+  'indigo',
+  'blue',
+  'cyan',
+  'teal',
+  'green',
+  'lime',
+  'yellow',
+  'orange',]
   
   return (
     <ResponsiveContainer width={"100%"} height={350}>

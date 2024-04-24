@@ -23,10 +23,10 @@ const frameworkGroups = [
   },
 ];
 
-export function MenuCheckbox() {
+export function MenuCheckbox({ dataSeparatedByGroups }) {
   const [open, setOpen] = React.useState(false);
   const [openGroups, setOpenGroups] = React.useState({});
-  const [value, setValue] = React.useState([]);
+  const [valueChecked, setValueChecked] = React.useState([]);
 
   const toggleGroupSelection = (groupLabel) => {
     setOpenGroups((prevOpenGroups) => ({
@@ -36,68 +36,77 @@ export function MenuCheckbox() {
   };
 
   const toggleAllFrameworks = (groupFrameworks) => {
-    const allFrameworkValues = groupFrameworks.map((framework) => framework.value);
-    const isAllSelected = groupFrameworks.every((framework) => value.includes(framework.value));
+    const allFrameworkValues = groupFrameworks.map((framework) => framework.sku);
+    const isAllSelected = groupFrameworks.every((framework) =>
+      valueChecked.includes(framework.sku)
+    );
 
     if (isAllSelected) {
-      setValue(value.filter((item) => !allFrameworkValues.includes(item)));
+      setValueChecked(valueChecked.filter((item) => !allFrameworkValues.includes(item)));
     } else {
-      setValue([...value, ...allFrameworkValues]);
+      setValueChecked([...valueChecked, ...allFrameworkValues]);
     }
   };
 
   const handleCheckboxChange = (framework) => {
-    if (value.includes(framework.value)) {
-      setValue(value.filter((item) => item !== framework.value));
+    if (valueChecked.includes(framework.sku)) {
+      setValueChecked(valueChecked.filter((item) => item !== framework.sku));
     } else {
-      setValue([...value, framework.value]);
+      setValueChecked([...valueChecked, framework.sku]);
     }
   };
 
+  const formatGroupData = (groupData) => {
+    return groupData.map((item) => ({
+      sku: item.sku,
+      product_name: item.product_name,
+      // Agrega otras propiedades necesarias aquí, como "asin", "currency", etc.
+    }));
+  };
+
   return (
-    <Popover open={open}onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div>
-
-        <Button variant="outline" role="combobox" className="w-[200px] justify-between">
-          Elegir items
-        </Button>
+          <Button variant="outline" role="combobox" className="w-[200px] justify-between">
+            Elegir items
+          </Button>
         </div>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <ul className="list-none p-0 m-0">
-          {frameworkGroups.map((group) => (
-            <li key={group.label}>
+          {Object.entries(dataSeparatedByGroups).map(([grupo, frameworks]) => (
+            <li key={grupo}>
               <div
                 className={cn(
                   "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                 )}
-                onClick={() => toggleGroupSelection(group.label)}
+                onClick={() => toggleGroupSelection(grupo)}
               >
                 <Checkbox
-                  checked={value.some((v) => group.frameworks.map((f) => f.value).includes(v))}
+                  checked={valueChecked.some((v) => frameworks.map((f) => f.sku).includes(v))}
                   className={cn("mr-2 h-4 w-4")}
                   onClick={(e) => e.stopPropagation()}
-                  onCheckedChange={() => toggleAllFrameworks(group.frameworks)}
+                  onCheckedChange={() => toggleAllFrameworks(frameworks)}
                 />
-                {group.label}
+                {grupo}
                 <ChevronsUpDown className="absolute right-0 h-4 w-4" />
               </div>
-              {openGroups[group.label] && (
+              {openGroups[grupo] && (
                 <ul className="list-none p-0 m-0 ml-4">
-                  {group.frameworks.map((framework) => (
-                    <li key={framework.value}>
+                  {formatGroupData(frameworks).map((framework, index) => (
+                    <li key={index}>
                       <div
                         className={cn(
                           "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                         )}
                       >
                         <Checkbox
-                          checked={value.includes(framework.value)}
+                          checked={valueChecked.includes(framework.sku)}
                           onCheckedChange={() => handleCheckboxChange(framework)}
                           className={cn("mr-2 h-4 w-4")}
                         />
-                        {framework.label}
+                        {framework.sku}
                       </div>
                     </li>
                   ))}

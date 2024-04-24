@@ -5,7 +5,7 @@ import PageTitle from "@/components/PageTitle";
 import Image from "next/image";
 import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
 import Card, { CardContent, CardProps } from "@/components/Card";
-import BarChart from "@/components/BarChart";
+import LineChart from "@/components/LineChart";
 import SalesCard, { SalesProps } from "@/components/SalesCard";
 import { Calendar } from "@/components/ui/calendar"
 import { DatePickerWithRange } from "@/components/ui/datePickerRangeModifica";
