@@ -10,6 +10,7 @@ type Props = {};
 import {
   ShoppingCart,
   LayoutDashboard,
+  
   UsersRound,
   Settings,
   ChevronRight,
@@ -74,6 +75,12 @@ interface BLa {
             title: "Upload",
             href: "/upload",
             icon: Settings,
+            variant: "ghost"
+          },
+          {
+            title: "dashboard specific",
+            href: "/specific-query-dashboard",
+            icon: LayoutDashboard,
             variant: "ghost"
           },
           {

@@ -24,18 +24,25 @@ type DateObject = {
 // Definición del tipo para un array de objetos DateObject
 type RangeDates = DateObject[];
 
-const HandelClientsComponents = () => {
+
+const HandelSpecificComponents = () => {
   const [RangeDates, setRangeDates] = useState<RangeDates>();
-  const [selectedDays, SetselectedDays] = useState<DateObject | null>(null);
+  const [selectedDays, SetselectedDays] = useState< DateObject | null>(null);
   const [selectedData, setSelectedData] = useState<any>([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
-  console.log("dentro del padre", checkedValues);
+  const [ventasPorDia, setVentasPorDia] = useState<any>([]); 
+
+console.log("ventasPorDia",ventasPorDia);
+
 
   // Función de devolución de llamada para manejar cambios en los valores chequeados
   const handleValueChange = (newValues: string[]) => {
     setCheckedValues(newValues);
+
+    
   };
-  console.log("selectedData", selectedData);
+  // console.log("selectedData", selectedData);
+
 
   // Función para recibir los datos del hijo
   const receiveSelectedDays = (data: DateObject | undefined | null) => {
@@ -51,12 +58,22 @@ const HandelClientsComponents = () => {
           data: { user },
         } = await supabase.auth.getUser();
         if (!user) return;
-        // const { data, error } = await supabase.rpc("maxymindates");
+        
+        const { data: ventasPorDiaData, error: ventasPorDiaError } = await supabase.rpc("obtenerventaspordia",  { id_argumento: user.id });
+
+        if (ventasPorDiaError) {
+          throw new Error("Error al obtener las ventas por día");
+        }
+        
+   
+        setVentasPorDia(ventasPorDiaData);
+  
+
         const { data, error } = await supabase.rpc(
           "obtener_fechas_disponibles_por_id",
           { id_argumento: user.id }
         );
-
+       
         if (error) {
           throw new Error("Error al obtener las fechas");
         }
@@ -68,76 +85,76 @@ const HandelClientsComponents = () => {
             { after: new Date(fecha_maxima) },
           ]);
         }
+
+       
+     
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchDataRangeDates();
-  }, []);
+  },
+  []);
 
-  useEffect(() => {
-    const fetchDataCharat = async () => {
-      try {
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        if (!user) return;
-        if (
-          selectedDays !== null &&
-          selectedDays.from !== null &&
-          selectedDays.to !== null
-        ) {
-          const { data, error } = await supabase.rpc("obtenerdatoscompletos", {
-            id_argumento: user.id,
-            from_date: selectedDays.from,
-            to_date: selectedDays.to,
-          });
+//   useEffect(() => {
+//     const fetchDataCharat = async () => {
+//       try {
+//         if (
+//           selectedDays !== null &&
+//           selectedDays.from !== null &&
+//           selectedDays.to !== null
+//         ) {
+//           const { data, error } = await supabase
+//             .from("main_orders")
+           
+//             .select(
+//               `   * ,
+//                     item_tax (
+//                       fk, *
+//                     ),
+//                     promotion(
+//                       fk, *
+//                     ),
+//                     shipping_data(
+//                       fk, *
+//                     )
 
-          // .select(
-          //   `   * ,
-          //         item_tax (
-          //           fk, *
-          //         ),
-          //         promotion(
-          //           fk, *
-          //         ),
-          //         shipping_data(
-          //           fk, *
-          //         )
+//                   `
+//             )
+//             .gte("purchase_date", selectedDays.from) // Utiliza el nombre de tu columna de fecha y ajusta el operador según tus necesidades
+//             .lte("purchase_date", selectedDays.to);
 
-          //       `
-          // )
-          // .gte("purchase_date", selectedDays.from) // Utiliza el nombre de tu columna de fecha y ajusta el operador según tus necesidades
-          // .lte("purchase_date", selectedDays.to);
+//           if (error) {
+//             throw new Error(error.message);
+//           }
+    
+// // console.log("selectedDays.from",selectedDays.from);
 
-          if (error) {
-            throw new Error(error.message);
-          }
+          
+//           setSelectedData(data);
+//           // console.log("Data:", data);
+//           // Aquí puedes hacer lo que quieras con los datos, como enviarlos al componente padre
+//         } else {
+//           console.log(
+//             "selectedDays.from y selectedDays.to deben ser distintos de null"
+//           );
+//         }
+//       } catch (error) {
+//         console.error("Error fetching data:", error);
+//       }
+//     };
 
-          // console.log("selectedDays.from",selectedDays.from);
+//     fetchDataCharat();
+//   }, [selectedDays]); // Agrega selectedDays como una dependencia del efecto
 
-          setSelectedData(data);
-          // console.log("Data:", data);
-          // Aquí puedes hacer lo que quieras con los datos, como enviarlos al componente padre
-        } else {
-          console.log(
-            "selectedDays.from y selectedDays.to deben ser distintos de null"
-          );
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
 
-    fetchDataCharat();
-  }, [selectedDays]); // Agrega selectedDays como una dependencia del efecto
 
   // useEffect(() => {
   //   const objetosPorGrupo = selectedData.reduce((acc, objeto) => {
   //     // Obtenemos el grupo al que pertenece el SKU del objeto
   //     const grupo = valorDeGrupos[objeto.sku];
-
+  
   //     // Si el grupo existe, agregamos el objeto al array correspondiente
   //     if (grupo) {
   //       // Si el grupo aún no tiene un array, lo inicializamos
@@ -147,13 +164,17 @@ const HandelClientsComponents = () => {
   //       // Agregamos el objeto al array del grupo
   //       acc[grupo].push(objeto);
   //     }
-
+  
   //     return acc;
   //   }, {});
-
+  
   //   // Actualizamos el estado con los objetos separados por grupos
   //   setDataSeparatedByGroups(objetosPorGrupo);
   // }, [selectedData]); // Asegúrate de incluir cualquier dependencia necesaria, como "objetos"
+  
+
+
+
 
   //     }
   //   if (data !== null) {
@@ -173,34 +194,39 @@ const HandelClientsComponents = () => {
   // setChartData(dataArray);
   // console.log('dataArray', dataArray);
 
-  // para ver las ventas de cada pais estado
+
+
+
+
+// para ver las ventas de cada pais estado
   // const stateCounts = {};
 
   // // Iterar sobre los resultados y contar el número de pedidos para cada estado
   // data.forEach(order => {
   //   const dateKey = new Date(order.purchase_date).toLocaleDateString();
   //   const state = order.ship_state;
-
+  
   //   // Inicializar el objeto para la fecha si aún no existe
   //   stateCounts[dateKey] = stateCounts[dateKey] || {};
   //   // Incrementar el recuento para el estado correspondiente
   //   stateCounts[dateKey][state] = (stateCounts[dateKey][state] || 0) + 1;
   // });
-
+  
   // // Convertir el objeto a un array de objetos
   // const dataStates = Object.entries(stateCounts).map(([date, stateCount]) => ({
   //   date,
   //   ...stateCount,
   // }));
-
+  
   // console.log("stateCounts",stateCounts);
-
+  
   // console.log("antes de dataStates",dataStates);
-
+  
   // dataStates.sort((a, b) => new Date(a.date) - new Date(b.date));
-
+  
   // console.log("despues de dataStates",dataStates);
   // setSelectedData(dataStates)
+  
 
   return (
     <>
@@ -209,7 +235,9 @@ const HandelClientsComponents = () => {
           RangeDates={RangeDates}
           sendDataToParent={receiveSelectedDays}
         />
-        <MenuCheckbox onValueChange={handleValueChange} />
+        <MenuCheckbox
+        onValueChange={handleValueChange}
+          />
       </section>
       <CardContent>
         <p className="p-4 font-semibold">Overview</p>
@@ -222,4 +250,4 @@ const HandelClientsComponents = () => {
   );
 };
 
-export default HandelClientsComponents;
+export default HandelSpecificComponents;

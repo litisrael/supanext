@@ -61,9 +61,9 @@ export default async function RootLayout({
           {/* main page */}
           <div className="p-8 w-full">
             {" "}
-            <MantineProvider>
+            {/* <MantineProvider> */}
               {children}
-            </MantineProvider>
+            {/* </MantineProvider> */}
           </div>
         </body>
       )}
