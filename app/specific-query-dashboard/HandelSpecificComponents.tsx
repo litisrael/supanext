@@ -97,39 +97,6 @@ console.log("ventasPorDia",ventasPorDia);
   },
   []);
 
-//   useEffect(() => {
-//     const fetchDataCharat = async () => {
-//       try {
-//         if (
-//           selectedDays !== null &&
-//           selectedDays.from !== null &&
-//           selectedDays.to !== null
-//         ) {
-//           const { data, error } = await supabase
-//             .from("main_orders")
-           
-//             .select(
-//               `   * ,
-//                     item_tax (
-//                       fk, *
-//                     ),
-//                     promotion(
-//                       fk, *
-//                     ),
-//                     shipping_data(
-//                       fk, *
-//                     )
-
-//                   `
-//             )
-//             .gte("purchase_date", selectedDays.from) // Utiliza el nombre de tu columna de fecha y ajusta el operador según tus necesidades
-//             .lte("purchase_date", selectedDays.to);
-
-//           if (error) {
-//             throw new Error(error.message);
-//           }
-    
-// // console.log("selectedDays.from",selectedDays.from);
 
           
 //           setSelectedData(data);

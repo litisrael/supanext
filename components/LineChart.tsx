@@ -1,101 +1,66 @@
-/** @format */
-"use client";
 import React from "react";
 import {
   LineChart as BarGraph,
   ResponsiveContainer,
   XAxis,
   YAxis,
-  Bar,Line,
+  Line,
+  CartesianGrid,
+  Tooltip,
+  Legend
 } from "recharts";
-// import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
-type Props = {};
+export default function LineChart({ cantidadpPorSkuYFecha }) {
+  const skuColors = {}; // Objeto para almacenar colores por SKU
+  const colorArray = [
+    "indigo",
+    "blue",
+    "teal",
+    "red",
+    "pink",
+    "grape",
+    "violet",
+    "indigo",
+    "blue",
+    "cyan",
+    "teal",
+    "green",
+    "lime",
+    "yellow",
+    "orange",
+  ];
 
-const data = [
+  // Transformación de datos
+  const dataTransformada = cantidadpPorSkuYFecha.reduce((acc, curr) => {
+    const { purchase_date, sku, total_quantity } = curr;
+    if (!acc[purchase_date]) {
+      acc[purchase_date] = { purchase_date };
+    }
 
-  {
-    name: 'Page A',
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-    {
-    name: 'Page A',
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: 'Page A',
-    uv: 4000,
-    pv: 2400,
-    amt: 2400,
-  },
-  {
-    name: 'Page B',
-    uv: 3000,
-    pv: 1398,
-    amt: 2210,
-  },
-  {
-    name: 'Page C',
-    uv: 2000,
-    pv: 9800,
-    amt: 2290,
-  },
-  {
-    name: 'Page D',
-    uv: 2780,
-    pv: 3908,
-    amt: 2000,
-  },
-  {
-    name: 'Page E',
-    uv: 1890,
-    pv: 4800,
-    amt: 2181,
-  },
-  {
-    name: 'Page F',
-    uv: 2390,
-    pv: 3800,
-    amt: 2500,
-  },
-  {
-    name: 'Page G',
-    uv: 3490,
-    pv: 4300,
-    amt: 2100,
-  },
-];
+    // Si el SKU aún no está en la fecha, lo inicializamos con la cantidad
+    if (!acc[purchase_date][sku]) {
+      acc[purchase_date][sku] = total_quantity;
+      // Si el SKU no tiene un color asignado, le asignamos uno nuevo
+      if (!skuColors[sku]) {
+        skuColors[sku] = colorArray[Object.keys(skuColors).length % colorArray.length];
+      }
+    } else {
+      // Si el SKU ya existe, sumamos la cantidad a la existente
+      acc[purchase_date][sku] += total_quantity;
+    }
+    return acc;
+  }, {});
 
-export default function LineChart(
-  // {data}
-{}: Props) {
-  // console.log("dentro de charat", data);
-    const todasLasPropiedadesSet = new Set();
-  const colorArray = [ 'indigo',
-  'blue',
-  'teal',
-  'red',
-  'pink',
-  'grape',
-  'violet',
-  'indigo',
-  'blue',
-  'cyan',
-  'teal',
-  'green',
-  'lime',
-  'yellow',
-  'orange',]
-  
+  // Convertir el objeto transformado en un array
+  const dataTransformadaArray = Object.values(dataTransformada)
+    .sort((a, b) => new Date(a.purchase_date) - new Date(b.purchase_date));
+
+
   return (
     <ResponsiveContainer width={"100%"} height={350}>
-      <BarGraph data={data}>
+      <BarGraph data={dataTransformadaArray}>
         <XAxis
-          dataKey={"name"}
+          dataKey="purchase_date"
           tickLine={false}
           axisLine={false}
           stroke="#888888"
@@ -106,11 +71,20 @@ export default function LineChart(
           axisLine={false}
           stroke="#888888"
           fontSize={12}
-          tickFormatter={(value) => `$${value}`}
+          tickFormatter={(value) => `${value}`}
         />
-        <Bar dataKey={"total"} radius={[4, 4, 0, 0]} />
-        <Line type="monotone" dataKey="pv" stroke="#8884d8" activeDot={{ r: 8 }} />
-          <Line type="monotone" dataKey="uv" stroke="#82ca9d" />
+    <Tooltip />
+          {/* <Legend /> */}
+        {/* Renderizar líneas para cada SKU */}
+        {Object.keys(skuColors).map((sku, index) => (
+          <Line
+            key={sku}
+            type="monotone"
+            dataKey={sku}
+            stroke={skuColors[sku]}
+            activeDot={{ r: 8 }} 
+          />
+        ))}
       </BarGraph>
     </ResponsiveContainer>
   );

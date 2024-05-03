@@ -6,11 +6,12 @@ import { useEffect, useState } from "react";
 import Card, { CardContent, CardProps } from "@/components/Card";
 import LineChart from "@/components/LineChart";
 import { useSetState } from "@mantine/hooks";
-// Definición del tipo para un rango de fechas
-// type DateRange = {
-//     startDate?: Date;
-//     endDate?: Date;
-//   };
+
+
+interface DateRange {
+  from?: Date | string;
+  to?: Date | string;
+}
 
 interface PurchaseItem {
   purchase_date: Date | string; // Assuming purchase_date can be either a Date or a string representation
@@ -20,22 +21,25 @@ type DateObject = {
   before?: Date;
   after?: Date;
 };
-
+interface TypeSkuYFecha {
+  purchase_date: string;
+  sku: string;
+  total_quantity: number;}
 // Definición del tipo para un array de objetos DateObject
 type RangeDates = DateObject[];
 
 const HandelClientsComponents = () => {
   const [RangeDates, setRangeDates] = useState<RangeDates>();
-  const [selectedDays, SetselectedDays] = useState<DateObject | null>(null);
-  const [selectedData, setSelectedData] = useState<any>([]);
+  const [selectedDays, SetselectedDays] = useState<DateRange| null>(null);
+  const [cantidadpPorSkuYFecha, setCantidadpPorSkuYFecha] = useState<TypeSkuYFecha[]>([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
-  console.log("dentro del padre", checkedValues);
+  console.log("selectedDays ",   selectedDays);
 
   // Función de devolución de llamada para manejar cambios en los valores chequeados
   const handleValueChange = (newValues: string[]) => {
     setCheckedValues(newValues);
   };
-  console.log("selectedData", selectedData);
+  console.log("selectedData", cantidadpPorSkuYFecha);
 
   // Función para recibir los datos del hijo
   const receiveSelectedDays = (data: DateObject | undefined | null) => {
@@ -88,28 +92,14 @@ const HandelClientsComponents = () => {
           selectedDays.from !== null &&
           selectedDays.to !== null
         ) {
-          const { data, error } = await supabase.rpc("obtenerdatoscompletos", {
-            id_argumento: user.id,
+          
+          const { data, error } = await supabase.rpc("obtenercantidadporskuyfecha", {
+            id_usuario : user.id,
             from_date: selectedDays.from,
             to_date: selectedDays.to,
           });
 
-          // .select(
-          //   `   * ,
-          //         item_tax (
-          //           fk, *
-          //         ),
-          //         promotion(
-          //           fk, *
-          //         ),
-          //         shipping_data(
-          //           fk, *
-          //         )
-
-          //       `
-          // )
-          // .gte("purchase_date", selectedDays.from) // Utiliza el nombre de tu columna de fecha y ajusta el operador según tus necesidades
-          // .lte("purchase_date", selectedDays.to);
+    
 
           if (error) {
             throw new Error(error.message);
@@ -117,7 +107,7 @@ const HandelClientsComponents = () => {
 
           // console.log("selectedDays.from",selectedDays.from);
 
-          setSelectedData(data);
+          setCantidadpPorSkuYFecha(data);
           // console.log("Data:", data);
           // Aquí puedes hacer lo que quieras con los datos, como enviarlos al componente padre
         } else {
@@ -215,7 +205,7 @@ const HandelClientsComponents = () => {
         <p className="p-4 font-semibold">Overview</p>
 
         <LineChart
-        //  data = {selectedData}
+         cantidadpPorSkuYFecha = {cantidadpPorSkuYFecha}
         />
       </CardContent>
     </>
