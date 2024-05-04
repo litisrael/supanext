@@ -33,13 +33,15 @@ const HandelClientsComponents = () => {
   const [selectedDays, SetselectedDays] = useState<DateRange| null>(null);
   const [cantidadpPorSkuYFecha, setCantidadpPorSkuYFecha] = useState<TypeSkuYFecha[]>([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
+  const [skuColors, setSkuColors] = useState({});
   console.log("selectedDays ",   selectedDays);
+  console.log("checkedValues ",   checkedValues);
 
   // Función de devolución de llamada para manejar cambios en los valores chequeados
   const handleValueChange = (newValues: string[]) => {
     setCheckedValues(newValues);
   };
-  console.log("selectedData", cantidadpPorSkuYFecha);
+  console.log("cantidadpPorSkuYFecha", cantidadpPorSkuYFecha);
 
   // Función para recibir los datos del hijo
   const receiveSelectedDays = (data: DateObject | undefined | null) => {
@@ -104,10 +106,45 @@ const HandelClientsComponents = () => {
           if (error) {
             throw new Error(error.message);
           }
+          const skuColors = {}; // Objeto para almacenar colores por SKU
+          const colors = [
+            "Slate", "Gray", "Zinc", "Neutral", "Stone", "Red", "Orange", "Amber", "Yellow",
+            "Lime", "Green", "Emerald", "Teal", "Cyan", "Sky", "Blue", "Indigo", "Violet",
+            "Purple", "Fuchsia", "Pink", "Rose"
+          ];
+        
+          // Transformación de datos
+          const dataTransformada = data.reduce((acc, curr) => {
+            const { purchase_date, sku, total_quantity } = curr;
 
-          // console.log("selectedDays.from",selectedDays.from);
-
-          setCantidadpPorSkuYFecha(data);
+            if (checkedValues.includes(sku)) {
+            if (!acc[purchase_date]) {
+              acc[purchase_date] = { purchase_date };
+            }
+        
+            // Si el SKU aún no está en la fecha, lo inicializamos con la cantidad
+            if (!acc[purchase_date][sku]) {
+              acc[purchase_date][sku] = total_quantity;
+              // Si el SKU no tiene un color asignado, le asignamos uno nuevo
+              if (!skuColors[sku]) {
+                const randomBaseColor = colors[Math.floor(Math.random() * colors.length)];
+                const randomTone = Math.floor(Math.random() * 750) + 50; // Tono aleatorio entre 50 y 800
+                skuColors[sku] = `${randomBaseColor}`;
+              }
+            } else {
+              // Si el SKU ya existe, sumamos la cantidad a la existente
+              acc[purchase_date][sku] += total_quantity;
+            }
+          }
+            return acc;
+          }, {});
+        
+          // Convertir el objeto transformado en un array
+          const dataTransformadaArray = Object.values(dataTransformada)
+            .sort((a, b) => new Date(a.purchase_date) - new Date(b.purchase_date));
+        
+            setSkuColors(skuColors)
+          setCantidadpPorSkuYFecha(dataTransformadaArray);
           // console.log("Data:", data);
           // Aquí puedes hacer lo que quieras con los datos, como enviarlos al componente padre
         } else {
@@ -121,7 +158,7 @@ const HandelClientsComponents = () => {
     };
 
     fetchDataCharat();
-  }, [selectedDays]); // Agrega selectedDays como una dependencia del efecto
+  }, [selectedDays, checkedValues]); // Agrega selectedDays como una dependencia del efecto
 
   // useEffect(() => {
   //   const objetosPorGrupo = selectedData.reduce((acc, objeto) => {
@@ -206,6 +243,7 @@ const HandelClientsComponents = () => {
 
         <LineChart
          cantidadpPorSkuYFecha = {cantidadpPorSkuYFecha}
+         skuColors={skuColors}
         />
       </CardContent>
     </>
