@@ -14,10 +14,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-interface RangeDates {
-  from: Date | null;
-  to: Date | null;
-}
+import {RangeDates} from "../../app/charat/handelClientsComponentes";
+
+// interface RangeDates {
+//   from: Date | null;
+//   to: Date | null;
+// }
 
 type DateObject = {
     before?: Date;
@@ -25,14 +27,15 @@ type DateObject = {
   };
 // const customDateFormatter = (date) => format(date, 'yyyy/MM/dd');
 
+
 export function DatePickerWithRange({
   className,
   RangeDates,
   sendDataToParent 
 }: {
   className?:React.HTMLAttributes<HTMLDivElement>
-  RangeDates: DateObject[] | undefined;
-  sendDataToParent: (data: DateRange | undefined) => void;
+  RangeDates: RangeDates | undefined;
+  sendDataToParent: (data: { from?: string; to?: string }) => void;
 } ) {
 
   const [date, setDate] = React.useState<DateRange | undefined >({
@@ -46,24 +49,24 @@ export function DatePickerWithRange({
     const updateDates = async () => {
       if (RangeDates) {
         try {
-          // Assuming RangeDates is an array of Date objects
-          // const fromDate = RangeDates[0];
-          const lastdate = RangeDates[1].after 
-          setDate({ from: lastdate, 
-            to: lastdate
-           });
+          const lastdate = RangeDates[1] && 'after' in RangeDates[1] ? (RangeDates[1] as DateObject).after :null;
+          if (lastdate) {
+            setDate({ from: lastdate, to: lastdate });
+          }
         } catch (error) {
           console.error('Error fetching RangeDates:', error);
         }
       }
     };
 
+ 
     updateDates();
   }, [RangeDates]); // Dependency array ensures useEffect runs when RangeDates changes
 
   useEffect(() => {
-    let from = null;
-    let to = null;
+    let from: string | undefined = undefined;
+  let to: string | undefined = undefined;
+
 
     if (date && date.from) {
         from = format(date.from, "yyyy/MM/dd");
@@ -84,9 +87,7 @@ export function DatePickerWithRange({
     //sendDataToParent(date); // Envía los datos al componente padre cuando date cambie
   }, [date]);
  
-// console.log(typeof date);
 
-// const customDateFormatter = (date) => format(date, 'yyyy/MM/dd');
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -125,7 +126,7 @@ export function DatePickerWithRange({
 
             numberOfMonths={2}
        
-            disabled = {RangeDates}
+            // disabled = {RangeDates}
           />
         </PopoverContent>
       </Popover>

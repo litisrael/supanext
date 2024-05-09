@@ -57,6 +57,7 @@
     "window-size": "^1.1.1"
   },
   "devDependencies": {
+    "@types/react-dom": "^18.3.0",
     "encoding": "^0.1.13",
     "postcss-preset-mantine": "^1.13.0"
   }

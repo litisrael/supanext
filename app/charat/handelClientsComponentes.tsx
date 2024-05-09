@@ -14,37 +14,60 @@ interface DateRange {
   to?: Date | string;
 }
 
-interface PurchaseItem {
-  purchase_date: Date | string; // Assuming purchase_date can be either a Date or a string representation
-  item_price: number;
+
+interface DataItem {
+  purchase_date: string;
+  [sku: string]: number | string; // Las claves son de tipo string y los valores son number o string
 }
-type DateObject = {
-  before?: Date;
-  after?: Date;
-};
+
+// interface DataTransformadaItem {
+//   purchase_date: string;
+//   [sku: string]: number | string; // Las claves son de tipo string y los valores son number o string
+// }
+export interface DataTransformadaItem {
+  purchase_date: string;
+  sku: string;
+  total_quantity: number;
+
+}
 interface TypeSkuYFecha {
   purchase_date: string;
   sku: string;
   total_quantity: number;
 }
+export interface SkuColors {
+  [sku: string]: string;
+}
+
+
+type DateObject = {
+  before?: Date;
+  after?: Date;
+};
+interface AccType {
+  [purchase_date: string]: 
+  { [key: string]: any }; // Puedes usar 'any' para los valores si no estás seguro de su tipo
+}
+
+
 // Definición del tipo para un array de objetos DateObject
-type RangeDates = DateObject[];
+export type RangeDates = DateObject[];
 
 const HandelClientsComponents = () => {
   const [RangeDates, setRangeDates] = useState<RangeDates>();
   const [selectedDays, SetselectedDays] = useState<DateRange | null>(null);
   const [cantidadpPorSkuYFecha, setCantidadpPorSkuYFecha] = useState<
-    TypeSkuYFecha[]
+  DataTransformadaItem[]
   >([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
   const [skuColors, setSkuColors] = useState({});
 
   const [promedio, setPromedio] = useState<number>(0); // Estado para almacenar el promedio
-  const [totalCantidad, setTotalCantidad] = useState<number>(0); // Estado para almacenar la cantidad total
+  // const [totalCantidad, setTotalCantidad] = useState<number>(0); // Estado para almacenar la cantidad total
   const [cardData, setCardData] = useState<CardProps[]>([]);
 
-  console.log("cardData ", cardData);
-  console.log("checkedValues ", checkedValues);
+  // console.log("selectedDays ", selectedDays);
+  // console.log("checkedValues ", checkedValues);
   console.log("cantidadpPorSkuYFecha ", cantidadpPorSkuYFecha);
 
   // Función de devolución de llamada para manejar cambios en los valores chequeados
@@ -53,7 +76,7 @@ const HandelClientsComponents = () => {
   };
 
   // Función para recibir los datos del hijo
-  const receiveSelectedDays = (data: DateObject | undefined | null) => {
+  const receiveSelectedDays = (data: DateRange  | undefined) => {
     SetselectedDays(data ?? null);
   };
 
@@ -116,7 +139,7 @@ const HandelClientsComponents = () => {
             throw new Error(error.message);
           }
           let totalCantidad = 0;
-          const skuColors = {}; // Objeto para almacenar colores por SKU
+          const skuColors: SkuColors = {}; // Objeto para almacenar colores por SKU
           const colors = [
             "Slate",
             "Gray",
@@ -143,10 +166,11 @@ const HandelClientsComponents = () => {
           ];
 
           // Transformación de datos
-          const dataTransformada = data.reduce((acc, curr) => {
+          const dataTransformada  = data.reduce((acc: AccType, curr: TypeSkuYFecha) => {
             const { purchase_date, sku, total_quantity } = curr;
 
-            if (checkedValues.includes(sku)) {
+ 
+            if (checkedValues.includes(sku) ) {
               totalCantidad += total_quantity;
               if (!acc[purchase_date]) {
                 acc[purchase_date] = { purchase_date };
@@ -168,12 +192,21 @@ const HandelClientsComponents = () => {
               }
             }
             return acc;
-          }, {});
+          },
+          {}  as AccType)
+        
 
+
+    
           // Convertir el objeto transformado en un array
-          const dataTransformadaArray = Object.values(dataTransformada).sort(
-            (a, b) => new Date(a.purchase_date) - new Date(b.purchase_date)
-          );
+const dataTransformadaArray = Object.values<DataTransformadaItem>(dataTransformada).sort(
+  (a, b) => new Date(a.purchase_date).getTime() - new Date(b.purchase_date).getTime()
+);
+
+
+          // const dataTransformadaArray = Object.values(dataTransformada).sort(
+          //   (a, b) => new Date(a.purchase_date) - new Date(b.purchase_date)
+          // );
 
           setSkuColors(skuColors);
           setCantidadpPorSkuYFecha(dataTransformadaArray);

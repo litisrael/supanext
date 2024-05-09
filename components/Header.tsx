@@ -3,6 +3,7 @@ import cx from 'clsx';
 import Link from 'next/link';
 import { userFun } from "./user.js";
 import React, { useState } from 'react';
+import { ReactNode } from 'react';
 
 import {
   Container,
@@ -55,7 +56,7 @@ const tabs = [
   // { label: 'Helpdesk', url: '/helpdesk' },
 ];
 
-export function Header({children}) {
+export function Header({children}: { children: ReactNode }) {
   
   // const navigate = useNavigate();
   // const { tabValue } = useParams();
@@ -80,11 +81,11 @@ export function Header({children}) {
 </Tabs.Tab>
 </Tabs>
   ));
-  const menuItems = tabs.map((tab) => (
-    <Menu.Item key={tab.label} onClick={() => redirect(tab.url)}>
-       <Anchor to={tab.url}>{tab.label}</Anchor>
-    </Menu.Item>
-  ));
+  // const menuItems = tabs.map((tab) => (
+  //   <Menu.Item key={tab.label} onClick={() => redirect(tab.url)}>
+  //      <Anchor to={tab.url}>{tab.label}</Anchor>
+  //   </Menu.Item>
+  // ));
   return (
     <div className={classes.header}>
       <Container className={classes.mainSection} size="md">
@@ -107,7 +108,7 @@ export function Header({children}) {
       </Menu.Target>
       <Menu.Dropdown>
      
-      {menuItems}
+      {/* {menuItems} */}
       </Menu.Dropdown>
 
           </Menu>

@@ -151,7 +151,7 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
           <Button
             variant="outline"
             role="combobox"
-            className="w-[200px] justify-between"
+            className="w-[300px] justify-between"
           >
             Elegir items
           </Button>

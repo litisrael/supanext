@@ -77,12 +77,12 @@ interface BLa {
             icon: Settings,
             variant: "ghost"
           },
-          {
-            title: "dashboard specific",
-            href: "/specific-query-dashboard",
-            icon: LayoutDashboard,
-            variant: "ghost"
-          },
+          // {
+          //   title: "dashboard specific",
+          //   href: "/specific-query-dashboard",
+          //   icon: LayoutDashboard,
+          //   variant: "ghost"
+          // },
           {
             title: "charat",
             href: "/charat",

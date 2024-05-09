@@ -8,7 +8,7 @@ import "./globals.css";
 import { cn } from "../lib/utils";
 import SideNavbar from "@/components/SideNavbar";
 import { ColorSchemeScript, MantineProvider } from "@mantine/core";
-import signOut  from "./signOut.ts";
+import signOut  from "./signOut";
 import Login from "./login/page";
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`

@@ -1,4 +1,6 @@
 import React from "react";
+
+import {  DataTransformadaItem, SkuColors} from "../app/charat/handelClientsComponentes";
 import {
   LineChart as BarGraph,
   ResponsiveContainer,
@@ -10,16 +12,14 @@ import {
   Legend
 } from "recharts";
 
-interface DataItem {
-  [key: string]: number | string; // Puede ser un número o una cadena
-  purchase_date: string; // purchase_date es una cadena
-}
-interface Props {
-  cantidadpPorSkuYFecha: DataItem[]; 
-  skuColors?: { [key: string]: string }; // Tipo opcional de skuColors
+
+
+interface LineChartProps {
+  cantidadpPorSkuYFecha: DataTransformadaItem[];
+  skuColors: SkuColors;
 }
 
-export default function LineChart({ cantidadpPorSkuYFecha , skuColors}:Props) {
+export default function LineChart({ cantidadpPorSkuYFecha , skuColors}:LineChartProps) {
 
   
   return (
