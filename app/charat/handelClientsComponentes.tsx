@@ -7,6 +7,7 @@ import Card, { CardContent, CardProps } from "@/components/Card";
 import LineChart from "@/components/LineChart";
 import { useSetState } from "@mantine/hooks";
 
+import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
 
 interface DateRange {
   from?: Date | string;
@@ -24,24 +25,32 @@ type DateObject = {
 interface TypeSkuYFecha {
   purchase_date: string;
   sku: string;
-  total_quantity: number;}
+  total_quantity: number;
+}
 // Definición del tipo para un array de objetos DateObject
 type RangeDates = DateObject[];
 
 const HandelClientsComponents = () => {
   const [RangeDates, setRangeDates] = useState<RangeDates>();
-  const [selectedDays, SetselectedDays] = useState<DateRange| null>(null);
-  const [cantidadpPorSkuYFecha, setCantidadpPorSkuYFecha] = useState<TypeSkuYFecha[]>([]);
+  const [selectedDays, SetselectedDays] = useState<DateRange | null>(null);
+  const [cantidadpPorSkuYFecha, setCantidadpPorSkuYFecha] = useState<
+    TypeSkuYFecha[]
+  >([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
   const [skuColors, setSkuColors] = useState({});
-  console.log("selectedDays ",   selectedDays);
-  console.log("checkedValues ",   checkedValues);
+
+  const [promedio, setPromedio] = useState<number>(0); // Estado para almacenar el promedio
+  const [totalCantidad, setTotalCantidad] = useState<number>(0); // Estado para almacenar la cantidad total
+  const [cardData, setCardData] = useState<CardProps[]>([]);
+
+  console.log("cardData ", cardData);
+  console.log("checkedValues ", checkedValues);
+  console.log("cantidadpPorSkuYFecha ", cantidadpPorSkuYFecha);
 
   // Función de devolución de llamada para manejar cambios en los valores chequeados
   const handleValueChange = (newValues: string[]) => {
     setCheckedValues(newValues);
   };
-  console.log("cantidadpPorSkuYFecha", cantidadpPorSkuYFecha);
 
   // Función para recibir los datos del hijo
   const receiveSelectedDays = (data: DateObject | undefined | null) => {
@@ -94,57 +103,99 @@ const HandelClientsComponents = () => {
           selectedDays.from !== null &&
           selectedDays.to !== null
         ) {
-          
-          const { data, error } = await supabase.rpc("obtenercantidadporskuyfecha", {
-            id_usuario : user.id,
-            from_date: selectedDays.from,
-            to_date: selectedDays.to,
-          });
-
-    
+          const { data, error } = await supabase.rpc(
+            "obtenercantidadporskuyfecha",
+            {
+              id_usuario: user.id,
+              from_date: selectedDays.from,
+              to_date: selectedDays.to,
+            }
+          );
 
           if (error) {
             throw new Error(error.message);
           }
+          let totalCantidad = 0;
           const skuColors = {}; // Objeto para almacenar colores por SKU
           const colors = [
-            "Slate", "Gray", "Zinc", "Neutral", "Stone", "Red", "Orange", "Amber", "Yellow",
-            "Lime", "Green", "Emerald", "Teal", "Cyan", "Sky", "Blue", "Indigo", "Violet",
-            "Purple", "Fuchsia", "Pink", "Rose"
+            "Slate",
+            "Gray",
+            "Zinc",
+            "Neutral",
+            "Stone",
+            "Red",
+            "Orange",
+            "Amber",
+            "Yellow",
+            "Lime",
+            "Green",
+            "Emerald",
+            "Teal",
+            "Cyan",
+            "Sky",
+            "Blue",
+            "Indigo",
+            "Violet",
+            "Purple",
+            "Fuchsia",
+            "Pink",
+            "Rose",
           ];
-        
+
           // Transformación de datos
           const dataTransformada = data.reduce((acc, curr) => {
             const { purchase_date, sku, total_quantity } = curr;
 
             if (checkedValues.includes(sku)) {
-            if (!acc[purchase_date]) {
-              acc[purchase_date] = { purchase_date };
-            }
-        
-            // Si el SKU aún no está en la fecha, lo inicializamos con la cantidad
-            if (!acc[purchase_date][sku]) {
-              acc[purchase_date][sku] = total_quantity;
-              // Si el SKU no tiene un color asignado, le asignamos uno nuevo
-              if (!skuColors[sku]) {
-                const randomBaseColor = colors[Math.floor(Math.random() * colors.length)];
-                const randomTone = Math.floor(Math.random() * 750) + 50; // Tono aleatorio entre 50 y 800
-                skuColors[sku] = `${randomBaseColor}`;
+              totalCantidad += total_quantity;
+              if (!acc[purchase_date]) {
+                acc[purchase_date] = { purchase_date };
               }
-            } else {
-              // Si el SKU ya existe, sumamos la cantidad a la existente
-              acc[purchase_date][sku] += total_quantity;
+
+              // Si el SKU aún no está en la fecha, lo inicializamos con la cantidad
+              if (!acc[purchase_date][sku]) {
+                acc[purchase_date][sku] = total_quantity;
+                // Si el SKU no tiene un color asignado, le asignamos uno nuevo
+                if (!skuColors[sku]) {
+                  const randomBaseColor =
+                    colors[Math.floor(Math.random() * colors.length)];
+                  const randomTone = Math.floor(Math.random() * 750) + 50; // Tono aleatorio entre 50 y 800
+                  skuColors[sku] = `${randomBaseColor}`;
+                }
+              } else {
+                // Si el SKU ya existe, sumamos la cantidad a la existente
+                acc[purchase_date][sku] += total_quantity;
+              }
             }
-          }
             return acc;
           }, {});
-        
+
           // Convertir el objeto transformado en un array
-          const dataTransformadaArray = Object.values(dataTransformada)
-            .sort((a, b) => new Date(a.purchase_date) - new Date(b.purchase_date));
-        
-            setSkuColors(skuColors)
+          const dataTransformadaArray = Object.values(dataTransformada).sort(
+            (a, b) => new Date(a.purchase_date) - new Date(b.purchase_date)
+          );
+
+          setSkuColors(skuColors);
           setCantidadpPorSkuYFecha(dataTransformadaArray);
+          
+          const promedioCalculado = (totalCantidad / dataTransformadaArray.length).toFixed(2);
+          setCardData([
+            {
+              label: "Total Cantidad",
+              amount: `$${totalCantidad}`,
+              icon: DollarSign, // O puedes proporcionar el ícono correspondiente
+              discription: "Cantidad de ventas",
+            },
+            {
+              label: "Promedio",
+              amount: `${promedioCalculado}`,
+              icon: DollarSign, // O puedes proporcionar el ícono correspondiente
+              discription: "Promedio de ventas",
+            },
+          ]);
+
+          // setPromedio(parseFloat(promedioCalculado));
+          // setTotalCantidad(totalCantidad);
           // console.log("Data:", data);
           // Aquí puedes hacer lo que quieras con los datos, como enviarlos al componente padre
         } else {
@@ -160,90 +211,33 @@ const HandelClientsComponents = () => {
     fetchDataCharat();
   }, [selectedDays, checkedValues]); // Agrega selectedDays como una dependencia del efecto
 
-  // useEffect(() => {
-  //   const objetosPorGrupo = selectedData.reduce((acc, objeto) => {
-  //     // Obtenemos el grupo al que pertenece el SKU del objeto
-  //     const grupo = valorDeGrupos[objeto.sku];
-
-  //     // Si el grupo existe, agregamos el objeto al array correspondiente
-  //     if (grupo) {
-  //       // Si el grupo aún no tiene un array, lo inicializamos
-  //       if (!acc[grupo]) {
-  //         acc[grupo] = [];
-  //       }
-  //       // Agregamos el objeto al array del grupo
-  //       acc[grupo].push(objeto);
-  //     }
-
-  //     return acc;
-  //   }, {});
-
-  //   // Actualizamos el estado con los objetos separados por grupos
-  //   setDataSeparatedByGroups(objetosPorGrupo);
-  // }, [selectedData]); // Asegúrate de incluir cualquier dependencia necesaria, como "objetos"
-
-  //     }
-  //   if (data !== null) {
-  //     const groupedData: DateObject[] = data.reduce((result, order) => {
-  //       const dateKey = new Date(order.purchase_date).toLocaleDateString();
-  //       result[dateKey] = (result[dateKey] || 0) + order.item_price;
-  //       return result;
-  //     }, {});
-
-  // Convertir el objeto a un array de objetos
-  // const dataArray = Object.entries(groupedData).map(([date, total]) => ({
-  //   date,
-  //   total: parseFloat(total.toFixed(2)),
-  // }));
-  // dataArray.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // setChartData(dataArray);
-  // console.log('dataArray', dataArray);
-
-  // para ver las ventas de cada pais estado
-  // const stateCounts = {};
-
-  // // Iterar sobre los resultados y contar el número de pedidos para cada estado
-  // data.forEach(order => {
-  //   const dateKey = new Date(order.purchase_date).toLocaleDateString();
-  //   const state = order.ship_state;
-
-  //   // Inicializar el objeto para la fecha si aún no existe
-  //   stateCounts[dateKey] = stateCounts[dateKey] || {};
-  //   // Incrementar el recuento para el estado correspondiente
-  //   stateCounts[dateKey][state] = (stateCounts[dateKey][state] || 0) + 1;
-  // });
-
-  // // Convertir el objeto a un array de objetos
-  // const dataStates = Object.entries(stateCounts).map(([date, stateCount]) => ({
-  //   date,
-  //   ...stateCount,
-  // }));
-
-  // console.log("stateCounts",stateCounts);
-
-  // console.log("antes de dataStates",dataStates);
-
-  // dataStates.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-  // console.log("despues de dataStates",dataStates);
-  // setSelectedData(dataStates)
-
   return (
     <>
-      <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-2">
+       <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-2 justify-items-center items-center">
         <DatePickerWithRange
           RangeDates={RangeDates}
           sendDataToParent={receiveSelectedDays}
+          
         />
         <MenuCheckbox onValueChange={handleValueChange} />
       </section>
-      <CardContent>
-        <p className="p-4 font-semibold">Overview</p>
-
+      <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-4">
+        {cardData.map((d, i) => (
+          <Card
+            key={i}
+            amount={d.amount}
+            discription={d.discription}
+            icon={d.icon}
+            label={d.label}
+          />
+        ))}
+      </section>
+   
+      <CardContent className="text-center">
+        <p className="p-4 font-semibold">cantidad de ventas por Sku</p>
         <LineChart
-         cantidadpPorSkuYFecha = {cantidadpPorSkuYFecha}
-         skuColors={skuColors}
+          cantidadpPorSkuYFecha={cantidadpPorSkuYFecha}
+          skuColors={skuColors}
         />
       </CardContent>
     </>

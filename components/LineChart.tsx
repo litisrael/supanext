@@ -23,7 +23,9 @@ export default function LineChart({ cantidadpPorSkuYFecha , skuColors}:Props) {
 
   
   return (
+    
     <ResponsiveContainer width={"100%"} height={350}>
+      
       <BarGraph data={cantidadpPorSkuYFecha  }>
         <XAxis
           dataKey="purchase_date"
