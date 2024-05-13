@@ -1,6 +1,6 @@
 import React from "react";
 
-import {  DataTransformadaItem, SkuColors} from "../app/charat/handelClientsComponentes";
+import {  DataTransformadaItem, SkuColors} from "../app/orders/handelClientsComponentes";
 import {
   LineChart as BarGraph,
   ResponsiveContainer,

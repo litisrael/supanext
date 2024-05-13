@@ -83,12 +83,12 @@ interface BLa {
           //   icon: LayoutDashboard,
           //   variant: "ghost"
           // },
-          {
-            title: "charat",
-            href: "/charat",
-            icon: BarChart,
-            variant: "ghost"
-          },
+          // {
+          //   title: "charat",
+          //   href: "/charat",
+          //   icon: BarChart,
+          //   variant: "ghost"
+          // },
           {
             title: "Users",
             href: "/users",
@@ -96,7 +96,7 @@ interface BLa {
             variant: "ghost"
           },
           {
-            title: "Ordrs",
+            title: "orders",
             href: "/orders",
             icon: ShoppingCart,
             variant: "ghost"

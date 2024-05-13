@@ -14,7 +14,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 
-import {RangeDates} from "../../app/charat/handelClientsComponentes";
+import {RangeDates} from "../../app/orders/handelClientsComponentes";
 
 // interface RangeDates {
 //   from: Date | null;
@@ -44,8 +44,7 @@ export function DatePickerWithRange({
     // from: new Date(2023, 10, 17),
     // to: new Date(2022, 0, 20),
   })
-  console.log("RangeDates",RangeDates);
-  
+
 
   useEffect(() => {
     const updateDates = async () => {
