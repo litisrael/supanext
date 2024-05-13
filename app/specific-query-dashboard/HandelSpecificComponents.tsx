@@ -6,46 +6,69 @@
 // import Card, { CardContent, CardProps } from "@/components/Card";
 // import LineChart from "@/components/LineChart";
 // import { useSetState } from "@mantine/hooks";
-// // Definición del tipo para un rango de fechas
-// // type DateRange = {
-// //     startDate?: Date;
-// //     endDate?: Date;
-// //   };
+// import {  DateBefore, DateAfter,Matcher } from "react-day-picker"
+// import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
 
-// interface PurchaseItem {
-//   purchase_date: Date | string; // Assuming purchase_date can be either a Date or a string representation
-//   item_price: number;
+// interface DateRange {
+//   from?: Date | string;
+//   to?: Date | string;
 // }
+
+
+
+
+// export interface DataTransformadaItem {
+//   purchase_date: string;
+//   sku: string;
+//   total_quantity: number;
+
+// }
+// interface TypeSkuYFecha {
+//   purchase_date: string;
+//   sku: string;
+//   total_quantity: number;
+// }
+// export interface SkuColors {
+//   [sku: string]: string;
+// }
+
+
 // type DateObject = {
 //   before?: Date;
 //   after?: Date;
 // };
+// interface AccType {
+//   [purchase_date: string]: 
+//   { [key: string]: any }; // Puedes usar 'any' para los valores si no estás seguro de su tipo
+// }
+
 
 // // Definición del tipo para un array de objetos DateObject
-// type RangeDates = DateObject[];
+//  export type RangeDates = DateObject[] | Matcher[];
 
 
-// const HandelSpecificComponents = () => {
+// const HandelClientsComponents = () => {
 //   const [RangeDates, setRangeDates] = useState<RangeDates>();
-//   const [selectedDays, SetselectedDays] = useState< DateObject | null>(null);
-//   const [selectedData, setSelectedData] = useState<any>([]);
+//   const [selectedDays, SetselectedDays] = useState<DateRange | null>(null);
+//   const [cantidadpPorSkuYFecha, setCantidadpPorSkuYFecha] = useState<
+//   DataTransformadaItem[]
+//   >([]);
 //   const [checkedValues, setCheckedValues] = useState<string[]>([]);
-//   const [ventasPorDia, setVentasPorDia] = useState<any>([]); 
+//   const [skuColors, setSkuColors] = useState({});
+//   // const [totalCantidad, setTotalCantidad] = useState<number>(0); // Estado para almacenar la cantidad total
+//   const [cardData, setCardData] = useState<CardProps[]>([]);
 
-// console.log("ventasPorDia",ventasPorDia);
-
+//   // console.log("selectedDays ", selectedDays);
+//   // console.log("checkedValues ", checkedValues);
+//   console.log("cantidadpPorSkuYFecha ", cantidadpPorSkuYFecha);
 
 //   // Función de devolución de llamada para manejar cambios en los valores chequeados
 //   const handleValueChange = (newValues: string[]) => {
 //     setCheckedValues(newValues);
-
-    
 //   };
-//   // console.log("selectedData", selectedData);
-
 
 //   // Función para recibir los datos del hijo
-//   const receiveSelectedDays = (data: DateObject | undefined | null) => {
+//   const receiveSelectedDays = (data: DateRange  | undefined) => {
 //     SetselectedDays(data ?? null);
 //   };
 
@@ -58,22 +81,12 @@
 //           data: { user },
 //         } = await supabase.auth.getUser();
 //         if (!user) return;
-        
-//         const { data: ventasPorDiaData, error: ventasPorDiaError } = await supabase.rpc("obtenerventaspordia",  { id_argumento: user.id });
-
-//         if (ventasPorDiaError) {
-//           throw new Error("Error al obtener las ventas por día");
-//         }
-        
-   
-//         setVentasPorDia(ventasPorDiaData);
-  
-
+//         // const { data, error } = await supabase.rpc("maxymindates");
 //         const { data, error } = await supabase.rpc(
 //           "obtener_fechas_disponibles_por_id",
 //           { id_argumento: user.id }
 //         );
-       
+
 //         if (error) {
 //           throw new Error("Error al obtener las fechas");
 //         }
@@ -85,41 +98,175 @@
 //             { after: new Date(fecha_maxima) },
 //           ]);
 //         }
-
-       
-     
 //       } catch (error) {
 //         console.error(error);
 //       }
 //     };
 
 //     fetchDataRangeDates();
-//   },
-//   []);
+//   }, []);
+
+//   useEffect(() => {
+//     const fetchDataCharat = async () => {
+//       try {
+//         const {
+//           data: { user },
+//         } = await supabase.auth.getUser();
+//         if (!user) return;
+//         if (
+//           selectedDays !== null &&
+//           selectedDays.from !== null &&
+//           selectedDays.to !== null
+//         ) {
+//           const { data, error } = await supabase.rpc(
+//             "obtenercantidadporskuyfecha",
+//             {
+//               id_usuario: user.id,
+//               from_date: selectedDays.from,
+//               to_date: selectedDays.to,
+//             }
+//           );
+
+//           if (error) {
+//             throw new Error(error.message);
+//           }
+//           let totalCantidad = 0;
+//           const skuColors: SkuColors = {}; // Objeto para almacenar colores por SKU
+//           const colors = [
+//             "Slate",
+//             "Gray",
+//             "Zinc",
+//             "Neutral",
+//             "Stone",
+//             "Red",
+//             "Orange",
+//             "Amber",
+//             "Yellow",
+//             "Lime",
+//             "Green",
+//             "Emerald",
+//             "Teal",
+//             "Cyan",
+//             "Sky",
+//             "Blue",
+//             "Indigo",
+//             "Violet",
+//             "Purple",
+//             "Fuchsia",
+//             "Pink",
+//             "Rose",
+//           ];
+
+//           // Transformación de datos
+//           const dataTransformada  = data.reduce((acc: AccType, curr: TypeSkuYFecha) => {
+//             const { purchase_date, sku, total_quantity } = curr;
+
+ 
+//             if (checkedValues.includes(sku) ) {
+//               totalCantidad += total_quantity;
+//               if (!acc[purchase_date]) {
+//                 acc[purchase_date] = { purchase_date };
+//               }
+
+//               // Si el SKU aún no está en la fecha, lo inicializamos con la cantidad
+//               if (!acc[purchase_date][sku]) {
+//                 acc[purchase_date][sku] = total_quantity;
+//                 // Si el SKU no tiene un color asignado, le asignamos uno nuevo
+//                 if (!skuColors[sku]) {
+//                   const randomBaseColor =
+//                     colors[Math.floor(Math.random() * colors.length)];
+//                   const randomTone = Math.floor(Math.random() * 750) + 50; // Tono aleatorio entre 50 y 800
+//                   skuColors[sku] = `${randomBaseColor}`;
+//                 }
+//               } else {
+//                 // Si el SKU ya existe, sumamos la cantidad a la existente
+//                 acc[purchase_date][sku] += total_quantity;
+//               }
+//             }
+//             return acc;
+//           },
+//           {}  as AccType)
+        
 
 
+    
+//           // Convertir el objeto transformado en un array
+// const dataTransformadaArray = Object.values<DataTransformadaItem>(dataTransformada).sort(
+//   (a, b) => new Date(a.purchase_date).getTime() - new Date(b.purchase_date).getTime()
+// );
+
+
+//           // const dataTransformadaArray = Object.values(dataTransformada).sort(
+//           //   (a, b) => new Date(a.purchase_date) - new Date(b.purchase_date)
+//           // );
+
+//           setSkuColors(skuColors);
+//           setCantidadpPorSkuYFecha(dataTransformadaArray);
           
+//           const promedioCalculado = (totalCantidad / dataTransformadaArray.length).toFixed(2);
+//           setCardData([
+//             {
+//               label: "Total Cantidad",
+//               amount: `$${totalCantidad}`,
+//               icon: DollarSign, // O puedes proporcionar el ícono correspondiente
+//               discription: "Cantidad de ventas",
+//             },
+//             {
+//               label: "Promedio",
+//               amount: `${promedioCalculado}`,
+//               icon: DollarSign, // O puedes proporcionar el ícono correspondiente
+//               discription: "Promedio de ventas",
+//             },
+//           ]);
+
+//           // setPromedio(parseFloat(promedioCalculado));
+//           // setTotalCantidad(totalCantidad);
+//           // console.log("Data:", data);
+//           // Aquí puedes hacer lo que quieras con los datos, como enviarlos al componente padre
+//         } else {
+//           console.log(
+//             "selectedDays.from y selectedDays.to deben ser distintos de null"
+//           );
+//         }
+//       } catch (error) {
+//         console.error("Error fetching data:", error);
+//       }
+//     };
+
+//     fetchDataCharat();
+//   }, [selectedDays, checkedValues]); // Agrega selectedDays como una dependencia del efecto
 
 //   return (
 //     <>
-//       <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-2">
+//        <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-2 justify-items-center items-center">
 //         <DatePickerWithRange
 //           RangeDates={RangeDates}
 //           sendDataToParent={receiveSelectedDays}
+          
 //         />
-//         <MenuCheckbox
-//         onValueChange={handleValueChange}
-//           />
+//         <MenuCheckbox onValueChange={handleValueChange} />
 //       </section>
-//       <CardContent>
-//         <p className="p-4 font-semibold">Overview</p>
-
+//       <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-4">
+//         {cardData.map((d, i) => (
+//           <Card
+//             key={i}
+//             amount={d.amount}
+//             discription={d.discription}
+//             icon={d.icon}
+//             label={d.label}
+//           />
+//         ))}
+//       </section>
+   
+//       <CardContent className="text-center">
+//         <p className="p-4 font-semibold">cantidad de ventas por Sku</p>
 //         <LineChart
-//         //  data = {selectedData}
+//           cantidadpPorSkuYFecha={cantidadpPorSkuYFecha}
+//           skuColors={skuColors}
 //         />
 //       </CardContent>
 //     </>
 //   );
 // };
 
-// export default HandelSpecificComponents;
+// export default HandelClientsComponents;

@@ -6,8 +6,11 @@ import { useEffect, useState } from "react";
 import Card, { CardContent, CardProps } from "@/components/Card";
 import LineChart from "@/components/LineChart";
 import { useSetState } from "@mantine/hooks";
-
+import {  DateBefore, DateAfter,Matcher } from "react-day-picker"
 import { DollarSign, Users, CreditCard, Activity } from "lucide-react";
+import PageTitle from "@/components/PageTitle";
+
+
 
 interface DateRange {
   from?: Date | string;
@@ -15,15 +18,8 @@ interface DateRange {
 }
 
 
-interface DataItem {
-  purchase_date: string;
-  [sku: string]: number | string; // Las claves son de tipo string y los valores son number o string
-}
 
-// interface DataTransformadaItem {
-//   purchase_date: string;
-//   [sku: string]: number | string; // Las claves son de tipo string y los valores son number o string
-// }
+
 export interface DataTransformadaItem {
   purchase_date: string;
   sku: string;
@@ -49,9 +45,8 @@ interface AccType {
   { [key: string]: any }; // Puedes usar 'any' para los valores si no estás seguro de su tipo
 }
 
+ export type RangeDates = Matcher[] | undefined;
 
-// Definición del tipo para un array de objetos DateObject
-export type RangeDates = DateObject[];
 
 const HandelClientsComponents = () => {
   const [RangeDates, setRangeDates] = useState<RangeDates>();
@@ -61,10 +56,7 @@ const HandelClientsComponents = () => {
   >([]);
   const [checkedValues, setCheckedValues] = useState<string[]>([]);
   const [skuColors, setSkuColors] = useState({});
-
-  const [promedio, setPromedio] = useState<number>(0); // Estado para almacenar el promedio
-  // const [totalCantidad, setTotalCantidad] = useState<number>(0); // Estado para almacenar la cantidad total
-  const [cardData, setCardData] = useState<CardProps[]>([]);
+ const [cardData, setCardData] = useState<CardProps[]>([]);
 
   // console.log("selectedDays ", selectedDays);
   // console.log("checkedValues ", checkedValues);
@@ -246,6 +238,34 @@ const dataTransformadaArray = Object.values<DataTransformadaItem>(dataTransforma
 
   return (
     <>
+     <div className="text-center">
+
+        <PageTitle  title="DATOS DE CANTIDAD DE VENTAS" />
+        <h1>
+  {RangeDates && RangeDates.length > 0 ? (
+    <>
+      <p>You can search for data from the calendar</p>
+      {RangeDates.map((item, index) => (
+        <div key={index}>
+          {/* Verificamos si es un DateObject */}
+          {typeof item === 'object' && item !== null && !('length' in item) ? (
+            <>
+              {('before' in item && item.before) && <p>From: {item.before.toDateString()}</p>}
+              {('after' in item && item.after) && <p>To: {item.after.toDateString()}</p>}
+            </>
+          ) : null}
+        </div>
+      ))}
+    </>
+  ) : (
+    <span>No tienes datos</span>
+  )}
+</h1>
+
+     </div>
+
+
+    
        <section className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-2 justify-items-center items-center">
         <DatePickerWithRange
           RangeDates={RangeDates}

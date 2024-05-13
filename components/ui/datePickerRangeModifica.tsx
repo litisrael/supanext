@@ -3,7 +3,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs'
 import * as React from "react"
 import { CalendarIcon } from "@radix-ui/react-icons"
 import { addDays, format } from "date-fns"
-import { DateRange, DateBefore, DateAfter } from "react-day-picker"
+import { DateRange, DateBefore, DateAfter,Matcher } from "react-day-picker"
 import { useEffect, useState } from 'react'
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -36,6 +36,7 @@ export function DatePickerWithRange({
   className?:React.HTMLAttributes<HTMLDivElement>
   RangeDates: RangeDates | undefined;
   sendDataToParent: (data: { from?: string; to?: string }) => void;
+  
 } ) {
 
   const [date, setDate] = React.useState<DateRange | undefined >({
@@ -43,12 +44,14 @@ export function DatePickerWithRange({
     // from: new Date(2023, 10, 17),
     // to: new Date(2022, 0, 20),
   })
+  console.log("RangeDates",RangeDates);
   
 
   useEffect(() => {
     const updateDates = async () => {
       if (RangeDates) {
         try {
+          // @ts-ignore
           const lastdate = RangeDates[1] && 'after' in RangeDates[1] ? (RangeDates[1] as DateObject).after :null;
           if (lastdate) {
             setDate({ from: lastdate, to: lastdate });
@@ -88,6 +91,13 @@ export function DatePickerWithRange({
   }, [date]);
  
 
+  // const disabledMatchers: Matcher[] = [];
+  // if (RangeDates) {
+  //   const fromDate = RangeDates.from || new Date(0); // Si from es null, establecer una fecha muy temprana
+  //   const toDate = RangeDates.to || new Date(); // Si to es null, establecer la fecha actual
+  //   disabledMatchers.push((day: Date) => day < fromDate || day > toDate);
+  // }
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -126,7 +136,7 @@ export function DatePickerWithRange({
 
             numberOfMonths={2}
        
-            // disabled = {RangeDates}
+            disabled = {RangeDates}
           />
         </PopoverContent>
       </Popover>
