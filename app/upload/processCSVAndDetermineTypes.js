@@ -33,7 +33,7 @@ export const processCSVAndDetermineTypes = async (files) => {
 
         const dataJsToTypes = determineTypeYTables(dataJs)
         // const dataJsToTypes = determineTypeReportDay(dataJs)
-        // console.log("dataJsToTypes",dataJsToTypes);
+        console.log("dataJsToTypes",dataJsToTypes);
   
         resolve(dataJsToTypes);
       };

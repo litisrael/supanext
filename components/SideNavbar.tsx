@@ -89,24 +89,24 @@ interface BLa {
           //   icon: BarChart,
           //   variant: "ghost"
           // },
-          {
-            title: "Users",
-            href: "/users",
-            icon: UsersRound,
-            variant: "ghost"
-          },
+          // {
+          //   title: "Users",
+          //   href: "/users",
+          //   icon: UsersRound,
+          //   variant: "ghost"
+          // },
           {
             title: "orders",
             href: "/orders",
             icon: ShoppingCart,
             variant: "ghost"
           },
-          {
-            title: "Settings",
-            href: "/settings",
-            icon: Settings,
-            variant: "ghost"
-          }
+          // {
+          //   title: "Settings",
+          //   href: "/settings",
+          //   icon: Settings,
+          //   variant: "ghost"
+          // }
         ]} 
 
         logout={

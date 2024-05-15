@@ -2,8 +2,12 @@
 // quizas separar primmero hacer obj con revisar que no alla comas dentro del campo y luego 
 // hacer que cada 
 export function csvToJs(csv) {
-  
-  const lines = csv.split(/\r?\n/);
+  let lines = csv.split(/\r?\n/);
+  console.log(lines);
+    // Detectar si el CSV está separado por comas o tabulaciones en la primera línea
+    const delimiter = lines[0].includes("\t") ? "\t" : ",";
+  console.log("delimiter",delimiter);
+ 
 
   const result = [];
   console.log("result",result);
@@ -11,7 +15,7 @@ export function csvToJs(csv) {
     .split(",")
     .map((column) => column.replaceAll("-", "_"));
 
-  headers.push("id", "day", "month");
+  // headers.push("id", "day", "month");
 
   
 

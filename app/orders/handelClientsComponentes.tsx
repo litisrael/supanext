@@ -5,12 +5,13 @@ import { MenuCheckbox } from "@/components/ui/comboboxDemo";
 import { useEffect, useState } from "react";
 import Card, { CardContent, CardProps } from "@/components/Card";
 import LineChart from "@/components/LineChart";
+import BarGraph from "@/components/BarGraph";
 import { useSetState } from "@mantine/hooks";
 import {  DateBefore, DateAfter,Matcher } from "react-day-picker"
 import { ShoppingCart, Users, CreditCard, Activity } from "lucide-react";
 import PageTitle from "@/components/PageTitle";
 
-import { getUser, fetchDataRangeDates, transformData } from "../../utils/dataFunctions";
+import { getUser, combineHeadersForChartOrders,combineHeadersForChartState } from "../../utils/dataFunctions";
 
 
 interface DateRange {
@@ -27,29 +28,36 @@ export interface DataTransformadaItem {
   total_quantity: number;
 
 }
-interface TypeSkuYFecha {
-  purchase_date: string;
-  sku: string;
-  total_quantity: number;
-}
+// interface TypeSkuYFecha {
+//   purchase_date: string;
+//   sku: string;
+//   total_quantity: number;
+// }
 export interface SkuColors {
   [sku: string]: string;
 }
 
 
-type DateObject = {
-  before?: Date;
-  after?: Date;
-};
-interface AccType {
-  [purchase_date: string]: 
-  { [key: string]: any }; // Puedes usar 'any' para los valores si no estás seguro de su tipo
-}
+// type DateObject = {
+//   before?: Date;
+//   after?: Date;
+// };
+// interface AccType {
+//   [purchase_date: string]: 
+//   { [key: string]: any }; // Puedes usar 'any' para los valores si no estás seguro de su tipo
+// }
 
  export type RangeDates = Matcher[] | undefined;
-
+ 
+ export type VentasXState = {
+  ship_state: string;
+  sku: string;
+  total_quantity: number;
+}
 
 const HandelClientsComponents = () => {
+  const [ventasXState, setVentasXState] = useState<VentasXState[]>([]);
+  const [statecolor, setStatecolor] = useState({});
   const [RangeDates, setRangeDates] = useState<RangeDates>();
   const [selectedDays, SetselectedDays] = useState<DateRange | null>(null);
   const [cantidadpPorSkuYFecha, setCantidadpPorSkuYFecha] = useState<
@@ -117,7 +125,7 @@ const HandelClientsComponents = () => {
           selectedDays.from !== null &&
           selectedDays.to !== null
         ) {
-          const { data, error } = await supabase.rpc(
+          const { data :dataVentasXdia , error :VentasXdia } = await supabase.rpc(
             "obtener_cantidad_ventas_por_dia",
             {
               id_usuario: user.id,
@@ -126,10 +134,25 @@ const HandelClientsComponents = () => {
             }
           );
 
-          if (error) {
-            throw new Error(error.message);
+          if (VentasXdia) {
+            throw new Error(VentasXdia.message);
           }
-          setCantidadpPorSkuYFecha(data)
+
+          const { data :dataVentasXState , error :VentasXState } = await supabase.rpc(
+            "obtener_cantidad_ventas_state",
+            {
+              id_usuario: user.id,
+              from_date: selectedDays.from,
+              to_date: selectedDays.to,
+            }
+          );
+
+          if (VentasXState) {
+            throw new Error(VentasXState.message);
+          }
+
+          setVentasXState(dataVentasXState)
+          setCantidadpPorSkuYFecha(dataVentasXdia)
           setDataFetched(true);
           setIsLoading(false)
         }
@@ -144,15 +167,22 @@ const HandelClientsComponents = () => {
 
   useEffect(() => {
     if (dataFetched) {
-      const { dataRenderizar: newDataRenderizar, skuColors: newSkuColors, totalCantidad } = transformData(cantidadpPorSkuYFecha, checkedValues);
-      setDataRenderizar(newDataRenderizar);
-      setSkuColors(newSkuColors);
+      const { dataRenderizar: newDataRenderizar, skuColors: newSkuColors, totalCantidad }
+       = combineHeadersForChartOrders(cantidadpPorSkuYFecha, checkedValues);
 
-      const promedioCalculado = (totalCantidad / newDataRenderizar.length).toFixed(2);
-      const cardDataMap = [
-        { amount: totalCantidad, discription: "Sales quantity" },
-        { amount: promedioCalculado, discription: "Average sales" }
-      ];
+
+       setDataRenderizar(newDataRenderizar);
+       setSkuColors(newSkuColors);
+       const promedioCalculado = (totalCantidad / newDataRenderizar.length).toFixed(2);
+       const cardDataMap = [
+         { amount: totalCantidad, discription: "Sales quantity" },
+         { amount: promedioCalculado, discription: "Average sales" }
+        ];
+        const { salesByState , stateColors }    = combineHeadersForChartState(ventasXState,checkedValues)
+    console.log("salesByState",salesByState);
+    // @ts-ignore
+        setVentasXState(salesByState) 
+        setStatecolor(stateColors)
   
       const newCardData = cardDataMap.map(({ amount, discription }) => ({
         label: discription,
@@ -222,6 +252,12 @@ const HandelClientsComponents = () => {
           cantidadpPorSkuYFecha={dataRenderizar}
           skuColors={skuColors}
         />
+      </CardContent>
+      
+      <CardContent className="text-center">
+        <p className="p-4 font-semibold">Sales quantity by State</p>
+
+      <BarGraph  data={ventasXState} dataKey="ship_state" colors={statecolor}  />
       </CardContent>
     </>
   );

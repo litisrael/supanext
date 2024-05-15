@@ -53,7 +53,9 @@ export function DatePickerWithRange({
           // @ts-ignore
           const lastdate = RangeDates[1] && 'after' in RangeDates[1] ? (RangeDates[1] as DateObject).after :null;
           if (lastdate) {
-            setDate({ from: lastdate, to: lastdate });
+            const threeDaysAgo = new Date(lastdate); // Creamos una nueva fecha a partir de la última fecha
+            threeDaysAgo.setDate(threeDaysAgo.getDate() - 3); // Restamos tres días a la fecha
+            setDate({ from: threeDaysAgo, to: lastdate });
           }
         } catch (error) {
           console.error('Error fetching RangeDates:', error);
@@ -83,10 +85,7 @@ export function DatePickerWithRange({
     
     sendDataToParent({  from,  to });
 
-   
-
-    
-    //sendDataToParent(date); // Envía los datos al componente padre cuando date cambie
+  
   }, [date]);
  
 

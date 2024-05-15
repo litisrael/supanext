@@ -36,8 +36,8 @@ export async function determineTypeYTables(table) {
 
     currentOrder.user_id = user.id;
      currentOrder.id = `${currentOrder.amazon_order_id}@${currentOrder.sku}`;
-    currentOrder.day = parsearDay(currentOrder.purchase_date);
-    currentOrder.month = parsearMonth(currentOrder.purchase_date);
+    // currentOrder.day = parsearDay(currentOrder.purchase_date);
+    // currentOrder.month = parsearMonth(currentOrder.purchase_date);
     currentOrder.quantity = parseInt(currentOrder.quantity);
     currentOrder.currency = currentOrder.currency;
     currentOrder.ship_country = currentOrder.ship_country;
@@ -63,6 +63,7 @@ export async function determineTypeYTables(table) {
     );
 
     // Convierte a booleano si la cadena es 'true' o 'false', de lo contrario, déjalo como está.
+    if (currentOrder.signature_confirmation_recommended !== undefined){
     currentOrder.signature_confirmation_recommended =
       currentOrder.signature_confirmation_recommended.toLowerCase().trim() ===
       "true"
@@ -72,16 +73,18 @@ export async function determineTypeYTables(table) {
             .trim() === "false"
         ? false
         : currentOrder.signature_confirmation_recommended;
-
+    }
     // Convierte a booleano si la cadena es 'true' o 'false', de lo contrario, déjalo como está.
+  if ( currentOrder.is_business_order !== undefined){
     currentOrder.is_business_order =
-      currentOrder.is_business_order.toLowerCase().trim() === "true"
-        ? true
-        : currentOrder.is_business_order.toLowerCase().trim() === "false"
-        ? false
-        : currentOrder.is_business_order;
+    currentOrder.is_business_order.toLowerCase().trim() === "true"
+    ? true
+    : currentOrder.is_business_order.toLowerCase().trim() === "false"
+    ? false
+    : currentOrder.is_business_order;
+  }
     // Insertar en la tabla principal (mainTable)
-
+    
     tables.mainTable.push({
       user_id: user.id,
       id: currentOrder.id,
@@ -186,19 +189,19 @@ export function addIdYRemoveDuplicates(arr) {
   return Object.values(dataMappedById);
 }
 
-function parsearDay(fechaString) {
-  const dateObject = new Date(fechaString);
-  const dayOfWeek = new Intl.DateTimeFormat("en-US", {
-    weekday: "long",
-  }).format(dateObject);
-  // console.log("dayOfWeek",dayOfWeek);
-  return dayOfWeek;
-}
-function parsearMonth(fechaString) {
-  const dateObject = new Date(fechaString);
-  const month = new Intl.DateTimeFormat("en-US", {
-    month: "long",
-  }).format(dateObject);
-  // console.log("month", month);
-  return month;
-}
+// function parsearDay(fechaString) {
+//   const dateObject = new Date(fechaString);
+//   const dayOfWeek = new Intl.DateTimeFormat("en-US", {
+//     weekday: "long",
+//   }).format(dateObject);
+//   // console.log("dayOfWeek",dayOfWeek);
+//   return dayOfWeek;
+// }
+// function parsearMonth(fechaString) {
+//   const dateObject = new Date(fechaString);
+//   const month = new Intl.DateTimeFormat("en-US", {
+//     month: "long",
+//   }).format(dateObject);
+//   // console.log("month", month);
+//   return month;
+// }

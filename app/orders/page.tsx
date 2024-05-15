@@ -12,65 +12,65 @@ import { DatePickerWithRange } from "@/components/ui/datePickerRangeModifica";
 // import {ComboboxDemo  } from "@/components/ui/comboboxDemo";
 
 
-const cardData: CardProps[] = [
-  {
-    label: "Total Revenue",
-    amount: "$45,231.89",
-    discription: "+20.1% from last month",
-    icon: DollarSign
-  },
-  {
-    label: "Subscriptions",
-    amount: "+2350",
-    discription: "+180.1% from last month",
-    icon: Users
-  },
-  {
-    label: "Sales",
-    amount: "+12,234",
-    discription: "+19% from last month",
-    icon: CreditCard
-  },
-  {
-    label: "Active Now",
-    amount: "+573",
-    discription: "+201 since last hour",
-    icon: Activity
-  },  {
-    label: "Active Now",
-    amount: "+573",
-    discription: "+201 since last hour",
-    icon: Activity
-  }
-];
+// const cardData: CardProps[] = [
+//   {
+//     label: "Total Revenue",
+//     amount: "$45,231.89",
+//     discription: "+20.1% from last month",
+//     icon: DollarSign
+//   },
+//   {
+//     label: "Subscriptions",
+//     amount: "+2350",
+//     discription: "+180.1% from last month",
+//     icon: Users
+//   },
+//   {
+//     label: "Sales",
+//     amount: "+12,234",
+//     discription: "+19% from last month",
+//     icon: CreditCard
+//   },
+//   {
+//     label: "Active Now",
+//     amount: "+573",
+//     discription: "+201 since last hour",
+//     icon: Activity
+//   },  {
+//     label: "Active Now",
+//     amount: "+573",
+//     discription: "+201 since last hour",
+//     icon: Activity
+//   }
+// ];
 
-const uesrSalesData: SalesProps[] = [
-  {
-    name: "Olivia Martin",
-    email: "olivia.martin@email.com",
-    saleAmount: "+$1,999.00"
-  },
-  {
-    name: "Jackson Lee",
-    email: "isabella.nguyen@email.com",
-    saleAmount: "+$1,999.00"
-  },
-  {
-    name: "Isabella Nguyen",
-    email: "isabella.nguyen@email.com",
-    saleAmount: "+$39.00"
-  },
-  {
-    name: "William Kim",
-    email: "will@email.com",
-    saleAmount: "+$299.00"
-  },
-  {
-    name: "Sofia Davis",
-    email: "sofia.davis@email.com",
-    saleAmount: "+$39.00"
-  }
-];
+// const uesrSalesData: SalesProps[] = [
+//   {
+//     name: "Olivia Martin",
+//     email: "olivia.martin@email.com",
+//     saleAmount: "+$1,999.00"
+//   },
+//   {
+//     name: "Jackson Lee",
+//     email: "isabella.nguyen@email.com",
+//     saleAmount: "+$1,999.00"
+//   },
+//   {
+//     name: "Isabella Nguyen",
+//     email: "isabella.nguyen@email.com",
+//     saleAmount: "+$39.00"
+//   },
+//   {
+//     name: "William Kim",
+//     email: "will@email.com",
+//     saleAmount: "+$299.00"
+//   },
+//   {
+//     name: "Sofia Davis",
+//     email: "sofia.davis@email.com",
+//     saleAmount: "+$39.00"
+//   }
+// ];
 
 export default async function CharatSells() {
 
@@ -95,7 +95,7 @@ export default async function CharatSells() {
         ))}
       </section> */}
       <section className="grid grid-cols-1  gap-4 transition-all lg:grid-cols-2">
-        <CardContent className="flex justify-between gap-4">
+        {/* <CardContent className="flex justify-between gap-4">
           <section>
             <p>Recent Sales</p>
             <p className="text-sm text-gray-400">
@@ -110,7 +110,7 @@ export default async function CharatSells() {
               saleAmount={d.saleAmount}
             />
           ))}
-        </CardContent>
+        </CardContent> */}
 
         {/*  */}
       </section>
