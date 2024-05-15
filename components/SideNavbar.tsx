@@ -10,7 +10,7 @@ type Props = {};
 import {
   ShoppingCart,
   LayoutDashboard,
-  
+  Earth ,
   UsersRound,
   Settings,
   ChevronRight,
@@ -96,17 +96,17 @@ interface BLa {
           //   variant: "ghost"
           // },
           {
-            title: "orders",
+            title: "Orders",
             href: "/orders",
             icon: ShoppingCart,
             variant: "ghost"
           },
-          // {
-          //   title: "Settings",
-          //   href: "/settings",
-          //   icon: Settings,
-          //   variant: "ghost"
-          // }
+          {
+            title: "States",
+            href: "/states",
+            icon: Earth ,
+            variant: "ghost"
+          }
         ]} 
 
         logout={

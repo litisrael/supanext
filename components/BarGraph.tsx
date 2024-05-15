@@ -55,7 +55,7 @@ interface BarGraphProps {
             //   type="monotone"
             stackId="a"
               dataKey={it}
-            //   fill={colors[it]}
+              fill={colors[it]}
             //   activeDot={{ r: 8 }} // Activar punto activo
             />
           ))}

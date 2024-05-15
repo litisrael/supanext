@@ -186,9 +186,10 @@ export const combineHeadersForChartState = (
 
       // Asignar color al sku si aún no tiene uno asignado
       if (!stateColors[item.sku]) {
-        const colorIndex = Object.keys(stateColors).length % colors.length; // Obtener índice de color
-        stateColors[item.sku] = colors[colorIndex]; // Asignar color al sku
-      }
+          const randomBaseColor =
+            colors[Math.floor(Math.random() * colors.length)];
+          stateColors[item.sku] = randomBaseColor;
+        }
     }
   }
 

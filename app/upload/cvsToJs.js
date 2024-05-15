@@ -3,14 +3,14 @@
 // hacer que cada 
 export function csvToJs(csv) {
   let lines = csv.split(/\r?\n/);
-  console.log(lines);
+  // console.log(lines);
     // Detectar si el CSV está separado por comas o tabulaciones en la primera línea
-    const delimiter = lines[0].includes("\t") ? "\t" : ",";
-  console.log("delimiter",delimiter);
+    // const delimiter = lines[0].includes("\t") ? "\t" : ",";
+  // console.log("delimiter",delimiter);
  
 
   const result = [];
-  console.log("result",result);
+  // console.log("result",result);
   const headers = lines[0]
     .split(",")
     .map((column) => column.replaceAll("-", "_"));

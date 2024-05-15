@@ -57,6 +57,7 @@ export interface SkuColors {
 
 const HandelClientsComponents = () => {
   const [ventasXState, setVentasXState] = useState<VentasXState[]>([]);
+  const [renderVentasXState, setRenderVentasXState] = useState<VentasXState[]>([]);
   const [statecolor, setStatecolor] = useState({});
   const [RangeDates, setRangeDates] = useState<RangeDates>();
   const [selectedDays, SetselectedDays] = useState<DateRange | null>(null);
@@ -167,21 +168,21 @@ const HandelClientsComponents = () => {
 
   useEffect(() => {
     if (dataFetched) {
-      const { dataRenderizar: newDataRenderizar, skuColors: newSkuColors, totalCantidad }
+            const { dataRenderizar, skuColors, totalCantidad }
        = combineHeadersForChartOrders(cantidadpPorSkuYFecha, checkedValues);
 
 
-       setDataRenderizar(newDataRenderizar);
-       setSkuColors(newSkuColors);
-       const promedioCalculado = (totalCantidad / newDataRenderizar.length).toFixed(2);
+       setDataRenderizar(dataRenderizar);
+       setSkuColors(skuColors);
+       const promedioCalculado = (totalCantidad / dataRenderizar.length).toFixed(2);
        const cardDataMap = [
          { amount: totalCantidad, discription: "Sales quantity" },
          { amount: promedioCalculado, discription: "Average sales" }
         ];
         const { salesByState , stateColors }    = combineHeadersForChartState(ventasXState,checkedValues)
-    console.log("salesByState",salesByState);
+  
     // @ts-ignore
-        setVentasXState(salesByState) 
+    setRenderVentasXState(salesByState) 
         setStatecolor(stateColors)
   
       const newCardData = cardDataMap.map(({ amount, discription }) => ({
@@ -194,7 +195,7 @@ const HandelClientsComponents = () => {
       setCardData(newCardData);
     }
     
-  }, [cantidadpPorSkuYFecha, checkedValues, dataFetched]);
+  }, [cantidadpPorSkuYFecha, checkedValues, dataFetched,setRenderVentasXState, ]);
 
 
   return (
@@ -257,7 +258,7 @@ const HandelClientsComponents = () => {
       <CardContent className="text-center">
         <p className="p-4 font-semibold">Sales quantity by State</p>
 
-      <BarGraph  data={ventasXState} dataKey="ship_state" colors={statecolor}  />
+      <BarGraph  data={renderVentasXState} dataKey="ship_state" colors={statecolor}  />
       </CardContent>
     </>
   );

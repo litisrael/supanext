@@ -88,8 +88,8 @@ export async function determineTypeYTables(table) {
     tables.mainTable.push({
       user_id: user.id,
       id: currentOrder.id,
-      day: currentOrder.day,
-      month: currentOrder.month,
+      // day: currentOrder.day,
+      // month: currentOrder.month,
       quantity: currentOrder.quantity,
       currency: currentOrder.currency,
       ship_country: currentOrder.ship_country,
