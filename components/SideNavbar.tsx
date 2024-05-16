@@ -9,7 +9,7 @@ type Props = {};
 
 import {
   ShoppingCart,
-  LayoutDashboard,
+  CircleDollarSign,
   Earth ,
   UsersRound,
   Settings,
@@ -83,12 +83,12 @@ interface BLa {
           //   icon: LayoutDashboard,
           //   variant: "ghost"
           // },
-          // {
-          //   title: "charat",
-          //   href: "/charat",
-          //   icon: BarChart,
-          //   variant: "ghost"
-          // },
+          {
+            title: "Billing",
+            href: "/billing",
+            icon: CircleDollarSign,
+            variant: "ghost"
+          },
           // {
           //   title: "Users",
           //   href: "/users",
