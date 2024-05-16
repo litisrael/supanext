@@ -5,14 +5,14 @@ export function csvToJs(csv) {
   let lines = csv.split(/\r?\n/);
   // console.log(lines);
     // Detectar si el CSV está separado por comas o tabulaciones en la primera línea
-    // const delimiter = lines[0].includes("\t") ? "\t" : ",";
+    const delimiter = lines[0].includes("\t") ? "\t" : ",";
   // console.log("delimiter",delimiter);
  
 
   const result = [];
   // console.log("result",result);
   const headers = lines[0]
-    .split(",")
+    .split(delimiter)
     .map((column) => column.replaceAll("-", "_"));
 
   // headers.push("id", "day", "month");
@@ -21,7 +21,7 @@ export function csvToJs(csv) {
 
   for (let i = 1; i < lines.length; i++) {
     const obj = {};
-    const field = lines[i].split(",");
+    const field = lines[i].split(delimiter);
     
   
     // se usa el currentIndex por si dentro de algun campo hay comas

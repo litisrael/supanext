@@ -18,7 +18,7 @@ export async function determineTypeYTables(table) {
   const filteredTable = addIdYRemoveDuplicates(table);
   
 
-
+console.log("filteredTable", filteredTable);
   const tables = {
     mainTable: [],
     orderChannel: [],
