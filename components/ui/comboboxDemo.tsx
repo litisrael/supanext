@@ -1,4 +1,4 @@
-import { Check, ChevronsUpDown, ChevronsDown } from "lucide-react";
+import { CircleHelp, Filter, ChevronsDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,6 +9,11 @@ import {
 import { Checkbox } from "@/components/ui/checkbox";
 import { useEffect, useState } from "react";
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import {
+  HoverCard,
+  HoverCardContent,
+  HoverCardTrigger,
+} from "@/components/ui/hover-card"
 
 interface MenuCheckboxProps {
   onValueChange: (values: string[]) => void; // Tipo de la función de devolución de llamada
@@ -144,16 +149,28 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
     }
   };
 
-  return (
-    <Popover open={open} onOpenChange={setOpen}>
+  return (<>
+
+
+<Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <div>
+        <div className="relative inline-block"> {/* Contenedor relativo */}
+          <HoverCard>
+            <HoverCardTrigger>
+              <span className="absolute left-[-20px] top-1/2 transform -translate-y-1/2">
+                <CircleHelp className="w-5 h-5" /> {/* Icono de ayuda */}
+              </span>
+            </HoverCardTrigger>
+            <HoverCardContent>
+              Choose the items you want to display on the chart.
+            </HoverCardContent>
+          </HoverCard>
           <Button
             variant="outline"
             role="combobox"
             className="w-[300px] justify-between"
-          >
-            Elegir items
+            >
+           Choose the items
           </Button>
         </div>
       </PopoverTrigger>
@@ -166,7 +183,7 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
                   "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                 )}
                 onClick={() => toggleGroupSelection(groupName)}
-              >
+                >
                 <Checkbox
                   checked={valueChequed.some((v) =>
                     groupItems.map((item) => item.value).includes(v)
@@ -174,13 +191,13 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
                   className={cn("mr-2 h-4 w-4")}
                   onClick={(e) => e.stopPropagation()}
                   onCheckedChange={() => toggleAllSku(groupItems)}
-                />
+                  />
                 {groupName}
                 <ChevronsDown
                   className={cn("absolute right-0 h-4 w-4", {
                     "transform rotate-180": openGroups[groupName], // Rotamos los chevrones si el grupo está abierto
                   })}
-                />
+                  />
               </div>
               {openGroups[groupName] && (
                 <ul className="list-none p-0 m-0 ml-4">
@@ -190,12 +207,12 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
                         className={cn(
                           "relative flex cursor-default select-none items-center rounded-sm px-2 py-1.5 text-sm outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
                         )}
-                      >
+                        >
                         <Checkbox
                           checked={valueChequed.includes(item.value)}
                           onCheckedChange={() => handleCheckboxChange(item)}
                           className={cn("mr-2 h-4 w-4")}
-                        />
+                          />
                         {item.label}
                       </div>
                     </li>
@@ -207,5 +224,6 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
         </ul>
       </PopoverContent>
     </Popover>
+          </>
   );
 }
