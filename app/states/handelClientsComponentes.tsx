@@ -130,6 +130,7 @@ const HandelClientsComponents = () => {
           if (VentasXState) {
             throw new Error(VentasXState.message);
           }
+      
 
           setVentasXState(dataVentasXState);
 
@@ -150,15 +151,13 @@ const HandelClientsComponents = () => {
         ventasXState,
         checkedValues
       );
+      console.log("checkedValues", checkedValues);
 
       // @ts-ignore
       setRenderVentasXState(salesByState);
       setStatecolor(stateColors);
     }
-  }, [, checkedValues, dataFetched, 
-
-    ventasXState
-]);
+  }, [checkedValues, dataFetched, ventasXState]);
 
   return (
     <>

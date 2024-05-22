@@ -1,6 +1,8 @@
 // me falta mapearlo por si se repite el mismo codigo
-
+import { NameOfParent } from "./parendYChilds";
 import { createClient } from '@/utils/supabase/client'
+import { normalizeState } from "./stateNormalizer";
+
 
 export async function determineTypeYTables(table) {
   const supabase = createClient();
@@ -17,6 +19,7 @@ export async function determineTypeYTables(table) {
 
   const filteredTable = addIdYRemoveDuplicates(table);
   
+
 
 console.log("filteredTable", filteredTable);
   const tables = {
@@ -38,10 +41,11 @@ console.log("filteredTable", filteredTable);
      currentOrder.id = `${currentOrder.amazon_order_id}@${currentOrder.sku}`;
     // currentOrder.day = parsearDay(currentOrder.purchase_date);
     // currentOrder.month = parsearMonth(currentOrder.purchase_date);
+     currentOrder.parent =NameOfParent(currentOrder.asin)
     currentOrder.quantity = parseInt(currentOrder.quantity);
     currentOrder.currency = currentOrder.currency;
     currentOrder.ship_country = currentOrder.ship_country;
-
+    currentOrder.ship_state = normalizeState(currentOrder.ship_state)
     const parseToFloatOrNull = (value) =>
       value != null ? parseFloat(value) : null;
     currentOrder.item_price = parseToFloatOrNull(currentOrder.item_price);
@@ -90,10 +94,12 @@ console.log("filteredTable", filteredTable);
       id: currentOrder.id,
       // day: currentOrder.day,
       // month: currentOrder.month,
+      parent:currentOrder.parent,
       quantity: currentOrder.quantity,
       currency: currentOrder.currency,
       ship_country: currentOrder.ship_country,
       asin: currentOrder.asin,
+
       fulfillment_channel: currentOrder.fulfillment_channel,
       is_business_order: currentOrder.is_business_order,
       item_price: currentOrder.item_price,

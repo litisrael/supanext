@@ -150,8 +150,6 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
   };
 
   return (<>
-
-
 <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <div className="relative inline-block"> {/* Contenedor relativo */}
@@ -174,7 +172,7 @@ export function MenuCheckbox({ onValueChange }: MenuCheckboxProps) {
           </Button>
         </div>
       </PopoverTrigger>
-      <PopoverContent className="w-[200px] p-0">
+      <PopoverContent className="w-[200px] p-0 max-h-[300px] overflow-y-auto">
         <ul className="list-none p-0 m-0">
           {Object.entries(grupos).map(([groupName, groupItems]) => (
             <li key={groupName}>

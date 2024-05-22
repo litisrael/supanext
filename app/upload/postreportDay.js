@@ -2,7 +2,7 @@
 import { createClient } from "../../utils/supabase/client.ts";
 
 
-export const uploadData = async (dataToInsert) => {
+export const uploadDataOrders = async (dataToInsert) => {
   const supabase = createClient();
   
 

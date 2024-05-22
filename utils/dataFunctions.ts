@@ -129,6 +129,9 @@ export const combineHeadersForChartOrders = (
     }
     return acc;
   }, {} as AccType);
+
+  console.log("compara dataTransformada", dataTransformada);
+  
   const dataRenderizar = Object.values<DataTransformadaItem>(
     // @ts-ignore:
     dataTransformada
@@ -173,8 +176,13 @@ export const combineHeadersForChartState = (
 
   let salesByState: {[key: string]: {[key: string]: number}} = {}; // Inicializar como objeto vacío
   let stateColors: {[key: string]: string} = {}; // Inicializar como objeto vacío
+console.log("data",data);
 
   for (let item of data) {
+
+  
+    // el problema es que recorre e array de checqued  
+    //  en lugar de recorrer 
     if (checkedValues.includes(item.sku)) { // Usar item.sku para obtener el sku actual
       if (!salesByState[item.ship_state]) {
         salesByState[item.ship_state] = {};
@@ -182,6 +190,7 @@ export const combineHeadersForChartState = (
       if (!salesByState[item.ship_state][item.sku]) {
         salesByState[item.ship_state][item.sku] = 0;
       }
+  
       salesByState[item.ship_state][item.sku] += item.total_quantity; // Sumar la cantidad al sku correspondiente
 
       // Asignar color al sku si aún no tiene uno asignado
@@ -193,11 +202,15 @@ export const combineHeadersForChartState = (
     }
   }
 
+
+if (Object.keys(salesByState).length === 0) { console.log("no hay datos");
+}
   const formattedSalesByState = Object.entries(salesByState).map(([ship_state, skus]) => ({
     ship_state,
     ...skus
   }));
 
+console.log("formattedSalesByState",formattedSalesByState);
 
 
 
