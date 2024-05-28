@@ -70,7 +70,6 @@ const HandelClientsComponents = () => {
   const [cardData, setCardData] = useState<CardProps[]>([]);
   const [dataFetched, setDataFetched] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-console.log("tasi tiene q ser ", RangeDates);
 
   // Función de devolución de llamada para manejar cambios en los valores chequeados
   const handleValueChange = (newValues: string[]) => {

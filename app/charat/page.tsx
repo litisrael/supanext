@@ -1,5 +1,5 @@
 "use client";
-// import { DatePickerWithRange } from "@/components/ui/datePickerRangeModifica";
+import { ComboboxParents } from "@/components/ui/comboboxParents";
 import { DatePickerWithRange } from "@/components/ui/newCalendarRange";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -19,6 +19,9 @@ import {
 import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
+
+
+
 
 const FormSchema = z.object({
   username: z.string().min(2, {
@@ -50,8 +53,6 @@ export default function InputForm() {
   });
 
 
-  console.log("form",form.getFieldState);
-  
  
   const receiveSelectedDays = (data: DateRange | undefined) => {
     SetselectedDays(data ?? null);
@@ -67,6 +68,8 @@ export default function InputForm() {
   }
 
   return (
+    <>
+    <ComboboxParents />
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
         <FormField
@@ -99,9 +102,23 @@ export default function InputForm() {
             </FormItem>
           )}
         />
-
+  {/* <FormField
+          control={form.control}
+          name="username"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Username</FormLabel>
+              <FormControl>
+                <Input placeholder="shadcn" {...field} />
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        /> */}
         <Button type="submit">Submit</Button>
       </form>
     </Form>
+    
+    </>
   );
 }
