@@ -83,18 +83,13 @@ interface BLa {
           //   icon: LayoutDashboard,
           //   variant: "ghost"
           // },
+       
           {
-            title: "Billing",
-            href: "/billing",
-            icon: CircleDollarSign,
+            title: "Charat",
+            href: "/charat",
+            icon: BarChart,
             variant: "ghost"
           },
-          // {
-          //   title: "Users",
-          //   href: "/users",
-          //   icon: UsersRound,
-          //   variant: "ghost"
-          // },
           {
             title: "Orders",
             href: "/orders",

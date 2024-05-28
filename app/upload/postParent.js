@@ -27,14 +27,14 @@ export const uploadDataParents = async (dataToInsert) => {
     console.log('Inserción exitosa en la tabla parents en Supabase. Registros insertados:', parentsData);
  
 
-    const { data: variationsData, error: variationsError } = await supabase
-      .from('variations')
-      .upsert(dataToInsert.variationsArray)
-      .select();
+    // const { data: variationsData, error: variationsError } = await supabase
+    //   .from('variations')
+    //   .upsert(dataToInsert.variationsArray)
+    //   .select();
 
    
-      if (variationsError) throw variationsError;
-      console.log('Inserción exitosa en la tabla variations en Supabase. Registros insertados:', variationsData);
+    //   if (variationsError) throw variationsError;
+    //   console.log('Inserción exitosa en la tabla variations en Supabase. Registros insertados:', variationsData);
  
 
 

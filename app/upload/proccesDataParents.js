@@ -12,7 +12,7 @@ export async function processAndOrganizeData(data) {
     parentsArray: [],
     ranksArray: [],
     salesRanksArray: [],
-    variationsArray: [],
+
   };
 
   const { isoString, parents, childs } = data;
@@ -21,9 +21,29 @@ export async function processAndOrganizeData(data) {
     const parent = parents[asin];
     const parent_id = `${isoString.split(".")[0]}@${asin}`;
     const user_id = user.id;
+    let variations = null;
+    if (parent.variations && parent.variations.length > 0) {
+        // Aquí convertimos el array de ASINs a un array JSON
+        
+        variations = parent.variations[0].asins;
+        //variations = parent.variations[0].asins.join(', ');
+    }
     // Add to parents array
-    tables.parentsArray.push({ parent_id, asin, isoString, user_id });
+    console.log(variations);
+    tables.parentsArray.push({ parent_id, asin, isoString, user_id,variations });
 
+    // if (parent.variations) {
+    //     parent.variations.forEach((variation) => {
+  
+     
+    //       tables.parentsArray.push({
+    //         // parent_id,
+    //         // asin: parent.asin,
+    //         // market_place_id: variation.marketplaceId,
+    //         variation_data: variation.asins,
+    //       });
+    //     });
+    //   }
     // Add to ranks array
     // if (parent.ranks) {
     //   parent.ranks.forEach((rank) => {
@@ -76,22 +96,12 @@ export async function processAndOrganizeData(data) {
         });
     }
 
-    // Add to variations array
 
-    if (parent.variations) {
-      parent.variations.forEach((variation) => {
 
-   
-        tables.variationsArray.push({
-          parent_id,
-          asin: parent.asin,
-          market_place_id: variation.marketplaceId,
-          variation_data: variation.asins,
-        });
-      });
-    }
+
   }
-  console.log("tables.salesRanksArray",tables.salesRanksArray)
+
+//   console.log("tables.salesRanksArray",tables.salesRanksArray)
 
   //     for (const asin in childs) {
   //         const child = childs[asin];

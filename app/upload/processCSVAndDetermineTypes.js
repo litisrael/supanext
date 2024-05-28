@@ -12,10 +12,10 @@ export const processCSVAndDetermineTypes = async (files) => {
 
   
   // Comprobar si es un archivo CSV
-  if (!selectedFile.type || !selectedFile.type.includes("csv")) {
-    console.error("El archivo seleccionado no es un archivo CSV.");
-    return;
-  }
+  // if (!selectedFile.type || !selectedFile.type.includes("csv")) {
+  //   console.error("El archivo seleccionado no es un archivo CSV.");
+  //   return;
+  // }
 
   const reader = new FileReader();
 

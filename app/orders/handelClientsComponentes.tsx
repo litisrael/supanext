@@ -70,6 +70,7 @@ const HandelClientsComponents = () => {
   const [cardData, setCardData] = useState<CardProps[]>([]);
   const [dataFetched, setDataFetched] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+console.log("tasi tiene q ser ", RangeDates);
 
   // Función de devolución de llamada para manejar cambios en los valores chequeados
   const handleValueChange = (newValues: string[]) => {
@@ -87,12 +88,14 @@ const HandelClientsComponents = () => {
     const fetchDataRangeDates = async () => {
       try {
         const user = await getUser();
-
+        
         if (!user) return;
+        console.log("userid",user.id);
         // const { data, error } = await supabase.rpc("maxymindates");
         const { data, error } = await supabase.rpc(
           "obtener_fechas_disponibles_por_id",
           { id_argumento: user.id }
+          
         );
 
         if (error) {

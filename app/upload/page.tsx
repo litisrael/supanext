@@ -14,6 +14,7 @@ type Parent = {
   parent_id: string;
   asin: string;
   isoString: string;
+  variation: string [];
 };
 
 type Rank = {
@@ -26,18 +27,18 @@ type Rank = {
   rank: number;
 };
 
-type Variation = {
-  parent_id: string;
-  asin: string;
-  market_place_id: string;
-  variation_data: any;
-};
+// type Variation = {
+//   parent_id: string;
+//   asin: string;
+//   market_place_id: string;
+//   variation_data: any;
+// };
 
 type Tables = {
   parentsArray: Parent[];
   ranksArray: Rank[];
   salesRanksArray: Rank[];
-  variationsArray: Variation[];
+  // variationsArray: Variation[];
 };
 
 
@@ -122,7 +123,7 @@ export default function FileUploadComponent() {
       <Input
         id="fileInput"
         type="file"
-        accept=".csv"
+        accept=".csv, .txt, text/csv, text/plain"
         onChange={handleFileChangeOfOrders}
         ref={inputFileRefOrders}
         className="m-2"
