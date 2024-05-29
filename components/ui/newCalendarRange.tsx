@@ -37,7 +37,7 @@ export function DatePickerWithRange({
     to: undefined,
   })
 const [RangeDates, setRangeDates] = useState<Matcher |undefined>(undefined)
-
+  console.log("date en el ",date);
   
   const fetchDatesRange = async () => {
     const response = await fetch("/api/querys/fetchDataRangeDates");

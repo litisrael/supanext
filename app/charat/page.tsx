@@ -20,40 +20,49 @@ import { Input } from "@/components/ui/input";
 import { toast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 
-
-
-
 const FormSchema = z.object({
   username: z.string().min(2, {
     message: "Username must be at least 2 characters.",
   }),
-  dateRange: z
-    .object({
-      startDate: z.date(),
-      endDate: z.date(),
-    })
-    .refine((data) => data.startDate <= data.endDate, {
-      message: "Start date must be before end date",
-    }),
+  datesSelected: z.object({
+    from: z.date(),
+    to: z.date(),
+  }),
+  // .refine((data) => data.startDate <= data.endDate, {
+  //   message: "Start date must be before end date",
+  // })
+  asinSelected: z.array(z.string()),
+  // .refine((asinSelected) => asinSelected.length > 0, {
+  //   message: "Please select at least one ASIN.",
+  // })
 });
 
 export default function InputForm() {
   const [selectedDays, SetselectedDays] = useState<DateRange | null>(null);
 
+  console.log("en", selectedDays);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       username: "",
-      dateRange: {
-        startDate: selectedDays?.from,
-        endDate: selectedDays?.to,
+      datesSelected: {
+        from: undefined,
+        to: undefined,
       },
+      asinSelected: [],
     },
   });
 
+  // useEffect(() => {
+  //   const watchedForm = form.watch();
+  //   console.log("watchedForm",watchedForm);
 
- 
+  // }, [form])
+
+  const watchedForm = form.watch();
+  console.log("watchedForm", watchedForm);
+
   const receiveSelectedDays = (data: DateRange | undefined) => {
     SetselectedDays(data ?? null);
   };
@@ -69,56 +78,58 @@ export default function InputForm() {
 
   return (
     <>
-    <ComboboxParents />
-    <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="w-2/3 space-y-6"
+        >
+          <FormField
+            control={form.control}
+            name="username"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Username</FormLabel>
+                <FormControl>
+                  <Input placeholder="shadcn" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
 
-        <FormField
-          control={form.control}
-          name="dateRange"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Date Range</FormLabel>
-              <FormControl>
-                <DatePickerWithRange
-              
-                  sendDataToParent={receiveSelectedDays}
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-  {/* <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        /> */}
-        <Button type="submit">Submit</Button>
-      </form>
-    </Form>
-    
+          <FormField
+            control={form.control}
+            name="datesSelected"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Date Range</FormLabel>
+                <FormControl>
+                  <DatePickerWithRange sendDataToParent={receiveSelectedDays} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="asinSelected"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Select ASIN</FormLabel>
+                <FormControl>
+                  <ComboboxParents
+                    selectedAsinParents={field.value}
+                    onChange={field.onChange}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Submit</Button>
+        </form>
+      </Form>
     </>
   );
 }

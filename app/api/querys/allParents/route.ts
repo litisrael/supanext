@@ -3,7 +3,10 @@ import {createClient} from '../../../../utils/supabase/server'
 
 import { NextResponse } from 'next/server';
 
-
+type FormattedItem = {
+  value: string;
+  label: string;
+};
 export async function GET(req :Request ) {
   try {
     const supabase = createClient();
@@ -15,7 +18,10 @@ export async function GET(req :Request ) {
   }
 }
 
-
+interface DateItem {
+  asin: string;
+  // Otros campos si los hay
+}
 const fetchRangeDates = async (supabase : any ) => {
     const { data: { user }, error: userError } = await supabase.auth.getUser();
   
@@ -37,7 +43,7 @@ const fetchRangeDates = async (supabase : any ) => {
       throw new Error('No dates found');
     }
   
-    const formattedArray = dates.map(item => ({
+    const formattedArray = dates.map((item: DateItem) => ({
         value: item.asin,
         label: item.asin
     }));

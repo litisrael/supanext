@@ -1,8 +1,6 @@
-"use client";
 import { useState, useEffect } from "react";
-import { Check, ChevronsUpDown } from "lucide-react";
-
-import { cn } from "@/lib/utils";
+import { ChevronsUpDown } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import {
   Command,
@@ -17,25 +15,49 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { cn } from "@/lib/utils"; // Asegúrate de que esta importación es correcta
+import { ControllerRenderProps } from "react-hook-form";
 
-export function ComboboxParents() {
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [dataAsin, setDataAsin] = useState<string[]>([]);
-
-  console.log("dataAsin", dataAsin);
-
-  const fetchDatesRange = async () => {
-    const response = await fetch("/api/querys/allParents");
-
-    const data = await response.json();
-
-    setDataAsin(data);
+type FormValues = {
+  username: string;
+  datesSelected: {
+    from: Date;
+    to: Date;
   };
+  asinSelected: string[];
+};
+
+type ComboboxParentsProps = {
+  selectedAsinParents: ControllerRenderProps<FormValues, "asinSelected">['value'];
+  onChange: ControllerRenderProps<FormValues, "asinSelected">['onChange'];
+};
+
+export function ComboboxParents({
+  selectedAsinParents,
+  onChange,
+}: ComboboxParentsProps) {
+  const [open, setOpen] = useState(false);
+  const [dataAsin, setDataAsin] = useState<{ label: string; value: string }[]>(
+    []
+  );
 
   useEffect(() => {
+    const fetchDatesRange = async () => {
+      const response = await fetch("/api/querys/allParents");
+      const data = await response.json();
+      setDataAsin(data);
+    };
+
     fetchDatesRange();
   }, []);
+
+  const handleCheckboxChange = (value: string) => {
+    const newSelectedValues = selectedAsinParents.includes(value)
+      ? selectedAsinParents.filter((item) => item !== value)
+      : [...selectedAsinParents, value];
+
+    onChange(newSelectedValues);
+  };
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -46,29 +68,35 @@ export function ComboboxParents() {
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
+          Select ASIN parents
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
       <PopoverContent className="w-[200px] p-0">
         <Command>
-          <CommandInput placeholder="Filter label..." autoFocus={true} />
           <CommandList>
-            <CommandEmpty>No label found.</CommandEmpty>
             <CommandGroup>
-              {dataAsin &&
-                dataAsin.map((item,i) => (
-                  <CommandItem
-                    key={item.label}
-                    value={item.value}
-                    // onSelect={(value) => {
-                    //   setLabel(value)
-                    //   setOpen(false);
-                    // }
-                // }
+              {dataAsin.map((item) => (
+                <div
+                  key={item.value}
+                  className="flex items-center justify-between px-2 py-1.5 text-sm rounded-sm"
+                  onClick={() => handleCheckboxChange(item.value)}
+                >
+                  <div
+                    className={cn(
+                      "flex-1 cursor-pointer select-none outline-none aria-selected:bg-accent aria-selected:text-accent-foreground data-[disabled]:pointer-events-none data-[disabled]:opacity-50"
+                    )}
                   >
                     {item.label}
-                  </CommandItem>
-                ))}
+                  </div>
+                  <Checkbox
+                    checked={selectedAsinParents.includes(item.value)}
+                    onCheckedChange={() => handleCheckboxChange(item.value)}
+                    onClick={(e) => e.stopPropagation()} // Evita que el evento click del div se dispare cuando se hace click en el checkbox
+                    className="ml-2"
+                  />
+                </div>
+              ))}
             </CommandGroup>
           </CommandList>
         </Command>
