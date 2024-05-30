@@ -37,9 +37,7 @@ export function ComboboxParents({
   onChange,
 }: ComboboxParentsProps) {
   const [open, setOpen] = useState(false);
-  const [dataAsin, setDataAsin] = useState<{ label: string; value: string }[]>(
-    []
-  );
+  const [dataAsin, setDataAsin] = useState<{ label: string; value: string }[]>([]);
 
   useEffect(() => {
     const fetchDatesRange = async () => {
@@ -59,6 +57,10 @@ export function ComboboxParents({
     onChange(newSelectedValues);
   };
 
+  const displayLabel = selectedAsinParents.length
+    ? `selected ${selectedAsinParents.length} ASINs`
+    : "Select ASIN parents";
+
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
@@ -68,7 +70,7 @@ export function ComboboxParents({
           aria-expanded={open}
           className="w-[200px] justify-between"
         >
-          Select ASIN parents
+            {displayLabel}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>

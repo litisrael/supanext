@@ -13,8 +13,6 @@ import {
   Select,
 } from "@/components/ui/select";
 
-import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
-import { DateRange, DateBefore, DateAfter, Matcher } from "react-day-picker";
 import {
   Form,
   FormControl,
@@ -23,38 +21,37 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+
 import { toast } from "@/components/ui/use-toast";
 import { useEffect, useState } from "react";
 
-const FormSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-  datesSelected: z.object({
-    from: z.date({
-      required_error: "Start date is required",
-    }),
-    to: z.date().refine((date) => !!date, {
-      message: "End date is required",
+const FormSchema = z
+  .object({
+    datesSelected: z.object({
+      from: z.date(), // Permitir que las fechas sean nulas
+      to: z.date(),
     }),
 
-  }),
- 
-  asinSelected: z.string().array().min(1,{
-
+    asinSelected: z.string().array().min(1, {
       message: "Please select at least one ASIN.",
-  }),
-  accountType: z.string().optional(),
- 
-});
+    }),
+    accountType: z.string().min(1, {
+      message: "Please select a function type for the chart.",
+    }),
+  })
+  .refine((data) => {
+    // Verificar si alguna de las fechas está indefinida
+    const { from, to } = data.datesSelected;
+    if (!from || !to) {
+      throw new Error("Please select both 'from' and 'to' dates.");
+    }
+    return true; // Devolver true si la validación pasa
+  });
 
 export default function InputForm() {
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
-      username: "",
       datesSelected: {
         from: undefined,
         to: undefined,
@@ -64,96 +61,102 @@ export default function InputForm() {
     },
   });
 
-
-
-  // const watchedForm = form.watch();
-  // console.log("watchedForm", watchedForm);
-
- 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-   console.log(!form.formState.isValid);
-   
-    !form.formState.isValid
-    // toast({
-    //   title: "You submitted the following values:",
-    //   description: JSON.stringify(data),
-    // });
+    console.log(!form.formState.isValid);
+    console.log(data);
+
+    toast({
+      title: "You submitted the following values:",
+      description: JSON.stringify(data),
+    });
   }
 
   return (
-    <>
+    <div className="flex flex-col justify-center items-center">
       <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-2/3 space-y-6"
-        >
-      <FormField
-            control={form.control}
-            name="accountType"
-            render={({ field }) => {
-              return (
-                <FormItem>
-                  <FormLabel>Account type</FormLabel>
-                  <Select onValueChange={field.onChange}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+        <div className=" flex flex-col sm:flex-row justify-center space-y-4 sm:space-x-2 sm:space-y-0">
+
+           
+
+            <div className="flex-1 ">
+              <FormField
+                control={form.control}
+                name="accountType"
+                render={({ field }) => {
+                  return (
+                    <FormItem  className="text-center w-[200px]  mx-auto">
+                      <FormLabel>Account type</FormLabel>
+                      <Select onValueChange={field.onChange}>
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select an account type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent >
+                          <SelectItem value="Sales">Sales</SelectItem>
+                          <SelectItem value="Orders">Orders</SelectItem>
+                          <SelectItem value="raitng parents">
+                            raitng parents
+                          </SelectItem>
+                          <SelectItem disabled value="Orders By City">
+                            Orders By City
+                          </SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  );
+                }}
+              />
+            </div>
+            <div className="flex-1 ml-4 mr-4">
+              <FormField
+                control={form.control}
+                name="datesSelected"
+                render={({ field }) => (
+                  <FormItem  className="text-center">
+                    <FormLabel>Date Range</FormLabel>
                     <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Select an account type" />
-                      </SelectTrigger>
+                      <DatePickerWithRange
+                        value={field.value}
+                        onChange={field.onChange}
+                      />
                     </FormControl>
-                    <SelectContent>
-                      <SelectItem value="Sales">Sales</SelectItem>
-                      <SelectItem value="Orders">Orders</SelectItem>
-                      <SelectItem value="raitng parents">raitng parents</SelectItem>
-                      <SelectItem disabled value="Orders By City">Orders By City</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              );
-            }}
-          />
 
-          <FormField
-            control={form.control}
-            name="datesSelected"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Date Range</FormLabel>
-                <FormControl>
-                  <DatePickerWithRange
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-              
-              
-              </FormItem>
-    
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="asinSelected"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Select ASIN</FormLabel>
-                <FormControl>
-                  <ComboboxParents
-                    selectedAsinParents={field.value}
-                    onChange={field.onChange}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <Button type="submit"
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+            <div className="flex-1 ">
+              <FormField
+                control={form.control}
+                name="asinSelected"
+                render={({ field }) => (
+                  <FormItem  className="text-center ">
+                    <FormLabel >Select ASIN</FormLabel>
+                    <FormControl>
+                      <ComboboxParents
+                        selectedAsinParents={field.value}
+                        onChange={field.onChange}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+          </div>
+          <Button
+            type="submit"
+            className="w-full mt-11 "
             // disabled={!form.formState.isValid}
-          
-          >Search Data</Button>
+          >
+            Search Data
+          </Button>
         </form>
       </Form>
-    </>
+    </div>
   );
 }
