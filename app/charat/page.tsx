@@ -5,6 +5,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
+import {
+  SelectValue,
+  SelectTrigger,
+  SelectContent,
+  SelectItem,
+  Select,
+} from "@/components/ui/select";
 
 import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
 import { DateRange, DateBefore, DateAfter, Matcher } from "react-day-picker";
@@ -25,22 +32,24 @@ const FormSchema = z.object({
     message: "Username must be at least 2 characters.",
   }),
   datesSelected: z.object({
-    from: z.date(),
-    to: z.date(),
+    from: z.date({
+      required_error: "Start date is required",
+    }),
+    to: z.date().refine((date) => !!date, {
+      message: "End date is required",
+    }),
+
   }),
-  // .refine((data) => data.startDate <= data.endDate, {
-  //   message: "Start date must be before end date",
-  // })
-  asinSelected: z.array(z.string()),
-  // .refine((asinSelected) => asinSelected.length > 0, {
-  //   message: "Please select at least one ASIN.",
-  // })
+ 
+  asinSelected: z.string().array().min(1,{
+
+      message: "Please select at least one ASIN.",
+  }),
+  accountType: z.string().optional(),
+ 
 });
 
 export default function InputForm() {
-  const [selectedDays, SetselectedDays] = useState<DateRange | null>(null);
-
-  console.log("en", selectedDays);
 
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -51,29 +60,24 @@ export default function InputForm() {
         to: undefined,
       },
       asinSelected: [],
+      accountType: "",
     },
   });
 
-  // useEffect(() => {
-  //   const watchedForm = form.watch();
-  //   console.log("watchedForm",watchedForm);
 
-  // }, [form])
 
-  const watchedForm = form.watch();
-  console.log("watchedForm", watchedForm);
+  // const watchedForm = form.watch();
+  // console.log("watchedForm", watchedForm);
 
-  const receiveSelectedDays = (data: DateRange | undefined) => {
-    SetselectedDays(data ?? null);
-  };
-
+ 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log(data);
-
-    toast({
-      title: "You submitted the following values:",
-      description: JSON.stringify(data),
-    });
+   console.log(!form.formState.isValid);
+   
+    !form.formState.isValid
+    // toast({
+    //   title: "You submitted the following values:",
+    //   description: JSON.stringify(data),
+    // });
   }
 
   return (
@@ -83,18 +87,30 @@ export default function InputForm() {
           onSubmit={form.handleSubmit(onSubmit)}
           className="w-2/3 space-y-6"
         >
-          <FormField
+      <FormField
             control={form.control}
-            name="username"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Username</FormLabel>
-                <FormControl>
-                  <Input placeholder="shadcn" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            name="accountType"
+            render={({ field }) => {
+              return (
+                <FormItem>
+                  <FormLabel>Account type</FormLabel>
+                  <Select onValueChange={field.onChange}>
+                    <FormControl>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select an account type" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="Sales">Sales</SelectItem>
+                      <SelectItem value="Orders">Orders</SelectItem>
+                      <SelectItem value="raitng parents">raitng parents</SelectItem>
+                      <SelectItem disabled value="Orders By City">Orders By City</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <FormMessage />
+                </FormItem>
+              );
+            }}
           />
 
           <FormField
@@ -104,10 +120,15 @@ export default function InputForm() {
               <FormItem>
                 <FormLabel>Date Range</FormLabel>
                 <FormControl>
-                  <DatePickerWithRange sendDataToParent={receiveSelectedDays} />
+                  <DatePickerWithRange
+                    value={field.value}
+                    onChange={field.onChange}
+                  />
                 </FormControl>
-                <FormMessage />
+              
+              
               </FormItem>
+    
             )}
           />
 
@@ -127,7 +148,10 @@ export default function InputForm() {
               </FormItem>
             )}
           />
-          <Button type="submit">Submit</Button>
+          <Button type="submit"
+            // disabled={!form.formState.isValid}
+          
+          >Search Data</Button>
         </form>
       </Form>
     </>
