@@ -1,16 +1,22 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../utils/supabase/server";
+import { SupabaseClient } from '@supabase/supabase-js';
+// interface FormDataParams {
+//   asinSelected: string[];
+//   accountType: string;
+//   datesSelected: {
+//     from: string;
+//     to: string;
+//   };
+// }
 
-interface FormDataParams {
-  asinSelected: string[];
-  accountType: string;
-  datesSelected: {
-    from: string;
-    to: string;
-  };
-}
+// type DataType = {
+//   order_date: string;
+//   parent_asin: string;
+//   cancelled_orders: number;
+// };
 
-export async function GET(req: Request) {
+export async function GET(req) {
   try {
     const supabase = createClient();
 
@@ -21,7 +27,7 @@ export async function GET(req: Request) {
     const from = searchParams.get("from");
     const to = searchParams.get("to");
 
-    const formData: FormDataParams = {
+    const formData = {
       asinSelected: asinSelected || [],
       accountType: accountType || "",
       datesSelected: {
@@ -36,31 +42,37 @@ export async function GET(req: Request) {
   } catch (error) {
     console.error("Error in GET handler:", error);
     return NextResponse.json(
-      { error: (error as Error).message },
+      { error: (error ).message },
       { status: 500 }
     );
   }
 }
 
+// export const fetchRanksParent = async (
+//   supabase: any,
+//   formData: FormDataParams
+
 export const fetchRanksParent = async (
-  supabase: any,
-  formData: FormDataParams
-) => {
+  supabase
+
+  , formData
+)  => {
   const {
     data: { user },
     error: userError,
   } = await supabase.auth.getUser();
 
+
+  if (!user) {
+    throw new Error("User is not authenticated");
+  }
   if (userError) {
     throw new Error("Error fetching user: " + userError.message);
   }
 
-  const { asinSelected, datesSelected } = formData;
+  const { asinSelected, datesSelected } = formData
 
-  // hay 2 funciones que pueden hacer el query
-  // get_orders_parents que es cte
-  // get_orders_parentsub que sub query 
-  const { data: RankParents, error } = await supabase.rpc(
+  const { data: RankParents , error } = await supabase.rpc(
     "get_cancelled_orders",
     {
       id_argumento: user.id,
@@ -70,19 +82,10 @@ export const fetchRanksParent = async (
     }
   );
 
-  return RankParents;
+  return RankParents ;
 };
 
-type DataType = {
-  order_date: string;
-  parent_asin: string;
-  cancelled_orders: number;
-};
 
-type ReducedDataType = {
-  name: string;
-  [key: string]: number | string;
-};
 
 
 
@@ -90,8 +93,8 @@ type ReducedDataType = {
 // order_date date,
 // cancelled_orders bigint
 
-const ordenarDataC = (data: DataType[]): ReducedDataType[] => {
-  const result: ReducedDataType[] = [];
+const ordenarDataC = (data)=> {
+  const result = [];
 
   const reducedData = data.reduce((acc, curr) => {
     const { order_date, parent_asin,  cancelled_orders } = curr;
@@ -102,7 +105,7 @@ const ordenarDataC = (data: DataType[]): ReducedDataType[] => {
     acc[order_date][parent_asin] = cancelled_orders;
 
     return acc;
-  }, {} as { [key: string]: ReducedDataType });
+  }, {});
 
   for (const date in reducedData) {
     result.push(reducedData[date]);
