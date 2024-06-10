@@ -69,6 +69,7 @@ export function ComboboxParents({
           role="combobox"
           aria-expanded={open}
           className="w-[200px] justify-between"
+          
         >
             {displayLabel}
           <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />

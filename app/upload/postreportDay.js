@@ -1,5 +1,5 @@
 // import { processCSVAndDetermineTypes } from "./processCSVAndDetermineTypes.js";
-import { createClient } from "../../utils/supabase/client.ts";
+import { createClient } from "../../utils/supabase/client";
 
 
 export const uploadDataOrders = async (dataToInsert) => {

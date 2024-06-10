@@ -78,9 +78,9 @@ interface BLa {
             variant: "ghost"
           },
           // {
-          //   title: "dashboard specific",
-          //   href: "/specific-query-dashboard",
-          //   icon: LayoutDashboard,
+          //   title: "charat server",
+          //   href: "/charatServer",
+          //   icon: BarChart,
           //   variant: "ghost"
           // },
        

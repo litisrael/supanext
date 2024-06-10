@@ -1,7 +1,8 @@
 import * as React from "react";
-import { addDays, format } from "date-fns";
+import { addDays, format, endOfDay } from "date-fns";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { DateRange, Matcher } from "react-day-picker";
+
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -25,12 +26,22 @@ export function DatePickerWithRange({
   onChange,
 }: {
   className?: React.HTMLAttributes<HTMLDivElement>;
-  value: DateRange | undefined;
+  value: DateRange | undefined ;
   onChange: (value: DateRange | undefined) => void;
 }) {
-  const [RangeDates, setRangeDates] = useState<Matcher | undefined>(undefined);
 
+
+  const [RangeDates, setRangeDates] = useState<Matcher | undefined>(undefined);
+  const [date, setDate] = React.useState<DateRange | undefined>({
+    from: undefined,
+    to: undefined,
+  });
+
+
+  console.log("value", value);
+  
   const fetchDatesRange = async () => {
+    
     const response = await fetch("/api/querys/fetchDataRangeDates");
     const data = await response.json();
     const reformattedData = data.reduce((acc: DateObject[], date: DateObject) => {
@@ -38,12 +49,25 @@ export function DatePickerWithRange({
         acc.push({ before: date.before });
       }
       if (date.after) {
+        
         acc.push({ after: date.after });
+        setDate({ from: undefined, to: new Date(date.after) });
       }
       return acc;
     }, []);
     setRangeDates(reformattedData);
+    
   };
+ 
+  useEffect(() => {
+    if (value && value.to) {
+      const endOfDayValue = endOfDay(new Date(value.to));
+      if (value.to.getTime() !== endOfDayValue.getTime()) {
+        onChange({ ...value, to: endOfDayValue });
+      }
+    }
+  }, [value, onChange]);
+
 
   useEffect(() => {
     fetchDatesRange();
@@ -67,7 +91,8 @@ export function DatePickerWithRange({
               value.to ? (
                 <>
                   {format(value.from, "LLL dd, y")} -{" "}
-                  {format(value.to, "LLL dd, y")}
+                  
+                  { format( value.to, "LLL dd, y")}
                 </>
               ) : (
                 format(value.from, "LLL dd, y")
@@ -81,7 +106,7 @@ export function DatePickerWithRange({
           <Calendar
             initialFocus
             mode="range"
-            defaultMonth={value?.from}
+            defaultMonth={date?.to}
             selected={value}
             onSelect={onChange}
             numberOfMonths={2}
