@@ -26,6 +26,7 @@
       "@/*": ["./*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Header.tsx", "components/user.js", "app/api/querys/cancelledOrders/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "components/Header.tsx", "components/user.js", "types"],
   "exclude": ["node_modules"]
 }
+
