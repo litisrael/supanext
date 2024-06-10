@@ -32,7 +32,7 @@ export async function GET(req: Request) {
 
     const data = await fetchRanksParent(supabase, formData);
 
-    return NextResponse.json(ordenarData(data), { status: 200 });
+    return NextResponse.json(ordenarDataC(data), { status: 200 });
   } catch (error) {
     console.error("Error in GET handler:", error);
     return NextResponse.json(
@@ -86,11 +86,11 @@ type ReducedDataType = {
 
 
 
-// parent_asin text,
+//  parent_asin text,
 // order_date date,
 // cancelled_orders bigint
 
-const ordenarData = (data: DataType[]): ReducedDataType[] => {
+const ordenarDataC = (data: DataType[]): ReducedDataType[] => {
   const result: ReducedDataType[] = [];
 
   const reducedData = data.reduce((acc, curr) => {
