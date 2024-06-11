@@ -42,11 +42,10 @@ export async function GET(req: Request) {
     );
   }
 }
-
-export const fetchRanksParent = async (
+ const fetchRanksParent = async (
   supabase: any,
   formData: FormDataParams
-) => {
+): Promise<any> => {
   const {
     data: { user },
     error: userError,
@@ -58,19 +57,27 @@ export const fetchRanksParent = async (
 
   const { asinSelected, datesSelected } = formData;
 
-
-  const { data: RankParents, error } = await supabase.rpc(
+  const { data: RankParents, error: rpcError } = await supabase.rpc(
     "get_gross_sales_parent",
     {
       id_argumento: user.id,
       asin_array: asinSelected,
-      start_date: datesSelected.from, // Convertir a cadena de fecha YYYY-MM-DD
-      end_date: datesSelected.to, // Convertir a cadena de fecha YYYY-MM-DD
+      start_date: datesSelected.from,
+      end_date: datesSelected.to,
     }
   );
 
+  if (rpcError) {
+    console.error('RPC error:', rpcError);
+    throw new Error('Error fetching dates: ' + rpcError.message);
+  }
+  if (!RankParents || RankParents.length === 0) {
+    throw new Error('No data found');
+  }
+
   return RankParents;
 };
+
 
 type DataType = {
   order_date: string;
@@ -86,16 +93,15 @@ type ReducedDataType = {
 const ordenarData = (data: DataType[]): ReducedDataType[] => {
   const result: ReducedDataType[] = [];
 
-
-
-
   const reducedData = data.reduce((acc, curr) => {
     const { order_date, parent_asin, total_sales } = curr;
 
     if (!acc[order_date]) {
       acc[order_date] = { name: order_date };
     }
-    acc[order_date][parent_asin] = total_sales;
+    if (order_date && parent_asin !== undefined) {
+      acc[order_date][parent_asin] = total_sales;
+    }
 
     return acc;
   }, {} as { [key: string]: ReducedDataType });

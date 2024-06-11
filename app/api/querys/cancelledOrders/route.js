@@ -1,24 +1,8 @@
-//@ts-nocheck
+
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../utils/supabase/server";
 
-
-interface FormDataParams {
-  asinSelected: string[];
-  accountType: string;
-  datesSelected: {
-    from: string;
-    to: string;
-  };
-}
-
-type DataType = {
-  order_date: string;
-  parent_asin: string;
-  cancelled_orders: number;
-};
-
-export async function GET(req: Request) {
+export async function GET(req) {
   try {
     const supabase = createClient();
 
@@ -29,7 +13,7 @@ export async function GET(req: Request) {
     const from = searchParams.get("from");
     const to = searchParams.get("to");
 
-    const formData: FormDataParams = {
+    const formData = {
       asinSelected: asinSelected || [],
       accountType: accountType || "",
       datesSelected: {
@@ -44,16 +28,13 @@ export async function GET(req: Request) {
   } catch (error) {
     console.error("Error in GET handler:", error);
     return NextResponse.json(
-      { error: (error as Error).message },
+      { error: error.message },
       { status: 500 }
     );
   }
 }
 
-export const fetchRanksParent = async (
-    supabase: any,
-    formData: FormDataParams
-): Promise<any[]> => {
+async function fetchRanksParent(supabase, formData) {
     const {
       data: { user },
       error: userError,
@@ -79,17 +60,11 @@ export const fetchRanksParent = async (
         throw new Error("Error fetching data: " + error.message);
     }
 
-    return data ;
-};
+    return data;
+}
 
-
-type ReducedDataType = {
-  name: string;
-  [key: string]: number | string;
-};
-
-const ordenarDataC = (data: DataType[]): ReducedDataType[] => {
-  const result: ReducedDataType[] = [];
+const ordenarDataC = (data) => {
+  const result = [];
 
   const reducedData = data.reduce((acc, curr) => {
     const { order_date, parent_asin,  cancelled_orders } = curr;
@@ -103,7 +78,7 @@ const ordenarDataC = (data: DataType[]): ReducedDataType[] => {
     }
 
     return acc;
-  }, {} as { [key: string]: ReducedDataType });
+  }, {});
 
   for (const date in reducedData) {
     result.push(reducedData[date]);

@@ -49,7 +49,7 @@ export async function GET(req: Request) {
 
 
 // app/api/querys/fetchDataRangeDates/utils/buildQuery.ts
-export const fetchRanksParent = async (supabase: any
+const fetchRanksParent = async (supabase: any
   , formData: FormDataParams
   ) => {
   // const { data:  user , error: userError } = await supabase.auth.getUser();

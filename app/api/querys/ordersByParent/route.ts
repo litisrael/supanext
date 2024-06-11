@@ -42,7 +42,7 @@ export async function GET(req: Request) {
   }
 }
 
-export const fetchRanksParent = async (
+const fetchRanksParent = async (
   supabase: any,
   formData: FormDataParams
 ) => {
