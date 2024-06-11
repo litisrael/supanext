@@ -2,7 +2,23 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../utils/supabase/server";
 
-export async function GET(req) {
+
+interface FormDataParams {
+  asinSelected: string[];
+  accountType: string;
+  datesSelected: {
+    from: string;
+    to: string;
+  };
+}
+
+type DataType = {
+  order_date: string;
+  parent_asin: string;
+  cancelled_orders: number;
+};
+
+export async function GET(req: Request) {
   try {
     const supabase = createClient();
 
@@ -13,7 +29,7 @@ export async function GET(req) {
     const from = searchParams.get("from");
     const to = searchParams.get("to");
 
-    const formData = {
+    const formData: FormDataParams = {
       asinSelected: asinSelected || [],
       accountType: accountType || "",
       datesSelected: {
@@ -28,13 +44,16 @@ export async function GET(req) {
   } catch (error) {
     console.error("Error in GET handler:", error);
     return NextResponse.json(
-      { error: error.message },
+      { error: (error as Error).message },
       { status: 500 }
     );
   }
 }
 
-async function fetchRanksParent(supabase, formData) {
+ const fetchRanksParent = async (
+    supabase: any,
+    formData: FormDataParams
+): Promise<DataType[]> => {
     const {
       data: { user },
       error: userError,
@@ -46,7 +65,7 @@ async function fetchRanksParent(supabase, formData) {
 
     const { asinSelected, datesSelected } = formData;
 
-    const { data, error } = await supabase.rpc(
+    const { data, error } = await supabase.rpc (
         "get_cancelled_orders",
         {
             id_argumento: user.id,
@@ -60,11 +79,17 @@ async function fetchRanksParent(supabase, formData) {
         throw new Error("Error fetching data: " + error.message);
     }
 
-    return data;
-}
+    return data as DataType[];
+};
 
-const ordenarDataC = (data) => {
-  const result = [];
+
+type ReducedDataType = {
+  name: string;
+  [key: string]: number | string;
+};
+
+const ordenarDataC = (data: DataType[]): ReducedDataType[] => {
+  const result: ReducedDataType[] = [];
 
   const reducedData = data.reduce((acc, curr) => {
     const { order_date, parent_asin,  cancelled_orders } = curr;
@@ -78,7 +103,7 @@ const ordenarDataC = (data) => {
     }
 
     return acc;
-  }, {});
+  }, {} as { [key: string]: ReducedDataType });
 
   for (const date in reducedData) {
     result.push(reducedData[date]);
