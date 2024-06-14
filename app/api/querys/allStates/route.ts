@@ -19,7 +19,7 @@ export async function GET(req :Request ) {
 }
 
 interface DateItem {
-  asin: string;
+    ship_state: string;
   // Otros campos si los hay
 }
 const fetchRangeDates = async (supabase : any ) => {
@@ -29,8 +29,8 @@ const fetchRangeDates = async (supabase : any ) => {
       throw new Error('Error fetching user: ' + userError.message);
     }
   
-    const { data: dates, error: rpcError } = await supabase.rpc(
-      "all_parents",
+    const { data: states, error: rpcError } = await supabase.rpc(
+      "all_state_limit_10mil",
       { id_argumento: user.id }
     );
   
@@ -39,15 +39,15 @@ const fetchRangeDates = async (supabase : any ) => {
       throw new Error('Error fetching dates: ' + rpcError.message);
     }
   
-    if (!dates || dates.length === 0) {
+    if (!states || states.length === 0) {
       throw new Error('No dates found');
     }
+  console.log("states",states);
   
-    const formattedArray = dates.map((item: DateItem) => ({
-        value: item.asin,
-        label: item.asin
+    const formattedArray = states.map((item: DateItem) => ({
+        value: item.ship_state,
+        label: item.ship_state
     }));
-    
     return formattedArray
   };
   

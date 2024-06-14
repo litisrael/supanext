@@ -1,12 +1,9 @@
-// app/components/InputForm.tsx
-"use client";
-
 import { ComboboxParents } from "@/components/ui/comboboxParents";
 import { DatePickerWithRange } from "@/components/ui/newCalendarRange";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
+import ChildComponent from "./ChildComponent";
 import { Button } from "@/components/ui/button";
 import {
   SelectValue,
@@ -52,8 +49,12 @@ interface InputFormProps {
   onFormSubmit: (data: any) => void;
 }
 
-export default function InputForm({ onFormSubmit }: InputFormProps) {
+export default function InputForm(
+  // { onFormSubmit }: InputFormProps
+) {
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<FormSchemaType | null>(null);
+  const [responseData, setResponseData] = useState<any>(null);
 
   const form = useForm<FormSchemaType>({
     resolver: zodResolver(FormSchema),
@@ -67,50 +68,41 @@ export default function InputForm({ onFormSubmit }: InputFormProps) {
     },
   });
 
+  const accountType = form.watch("accountType")
+ 
   async function onSubmit(data: FormSchemaType) {
     try {
-      console.log("data",data);
-      console.log("data",typeof data.datesSelected.from);
       
       const { datesSelected, asinSelected, accountType } = data;
 
       const queryParams = new URLSearchParams({
         asinSelected: asinSelected.join(','),
-        
         from: datesSelected.from ? datesSelected.from.toISOString() : '',
         to: datesSelected.to ? datesSelected.to.toISOString() : '',
       });
 
       const response = await fetch(`/api/querys/${accountType}?${queryParams.toString()}`);
       const responseData = await response.json();
-console.log(responseData);
-
-
-      onFormSubmit(responseData);
+      console.log(responseData);
+      setFormData(data); // Guardar datos del formulario
+      setResponseData(responseData); // Guardar datos de la respuesta
     } catch (error) {
       console.error(error);
     }
   }
 
   return (
-    <div className="flex flex-col justify-center items-center">
-   
+    <div className="flex flex-col justify-center items-center w-full px-4">
       <Form {...form}>
-        <form
-        
-        onSubmit={form.handleSubmit(onSubmit)}
-        
-        >
-
-          
-          <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-x-2 sm:space-y-0">
-            <div className="flex-1">
+        <form onSubmit={form.handleSubmit(onSubmit)} className="w-full">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
+            <div className="col-span-1">
               <FormField
                 control={form.control}
                 name="accountType"
                 render={({ field }) => (
-                  <FormItem className="text-center w-[200px] mx-auto">
-                    <FormLabel>Account type</FormLabel>
+                  <FormItem className="text-center w-full mx-auto">
+                    <FormLabel className="block">Account type</FormLabel>
                     <Select onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
@@ -120,9 +112,9 @@ console.log(responseData);
                       <SelectContent>
                         <SelectItem value="grossSalesParent">Gross Sales</SelectItem>
                         <SelectItem value="ordersByParent">Orders</SelectItem>
-                        <SelectItem value="cancelledOrders">orders cancelled</SelectItem>
-                        <SelectItem value="ranksParents">Rating parents</SelectItem>
-                        <SelectItem disabled value="Orders By City">
+                        <SelectItem value="cancelledOrders">Orders Cancelled</SelectItem>
+                        <SelectItem value="ranksParents">Rating Parents</SelectItem>
+                        <SelectItem value="state">
                           Orders By City
                         </SelectItem>
                       </SelectContent>
@@ -132,37 +124,52 @@ console.log(responseData);
                 )}
               />
             </div>
-            <div className="flex-1 ml-4 mr-4">
+
+            {accountType === "state" && (
+              <div className="col-span-1">
+                <FormField
+                  control={form.control}
+                  name="asinSelected"
+                  render={({ field }) => (
+                    <FormItem className="text-center w-full">
+                      <FormLabel className="block">Select city</FormLabel>
+                      <FormControl>
+                        <ComboboxParents selectedAsinParents={field.value} onChange={field.onChange} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+            )}
+
+            <div className="col-span-1">
               <FormField
                 control={form.control}
                 name="datesSelected"
                 render={({ field }) => (
-               
-                  <FormItem className="text-center">
-                    <FormLabel>Date Range</FormLabel>
+                  <FormItem className="text-center w-full">
+                    <FormLabel className="block">Date Range</FormLabel>
                     <FormControl>
-                  
                       <DatePickerWithRange
-                           //@ts-ignore
-                      value={field.value} onChange={field.onChange} />
+                        //@ts-ignore
+                        value={field.value} onChange={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
             </div>
-            <div className="flex-1">
+
+            <div className="col-span-1">
               <FormField
                 control={form.control}
                 name="asinSelected"
                 render={({ field }) => (
-                  <FormItem className="text-center">
-                    <FormLabel>Select ASIN</FormLabel>
+                  <FormItem className="text-center w-full">
+                    <FormLabel className="block">Select ASIN</FormLabel>
                     <FormControl>
-                      <ComboboxParents
-                        selectedAsinParents={field.value}
-                        onChange={field.onChange}
-                      />
+                      <ComboboxParents selectedAsinParents={field.value} onChange={field.onChange} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -175,6 +182,12 @@ console.log(responseData);
           </Button>
         </form>
       </Form>
+
+      {formData && responseData && (
+        <div className="w-full mt-8">
+          <ChildComponent formData={formData} responseData={responseData} />
+        </div>
+      )}
     </div>
   );
 }

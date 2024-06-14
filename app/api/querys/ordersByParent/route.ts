@@ -30,6 +30,7 @@ export async function GET(req: Request) {
       },
     };
 
+
     const data = await fetchRanksParent(supabase, formData);
 
     return NextResponse.json(ordenarData(data), { status: 200 });

@@ -38,7 +38,7 @@ export function DatePickerWithRange({
   });
 
 
-  console.log("value", value);
+  // console.log("value", value);
   
   const fetchDatesRange = async () => {
     
