@@ -115,8 +115,8 @@ export default function InputForm(
                 control={form.control}
                 name="accountType"
                 render={({ field }) => (
-                  <FormItem className="text-center w-full mx-auto">
-                    <FormLabel className="block">Account type</FormLabel>
+                  <FormItem className="text-center  mx-auto w-[200px] p-0" >
+                    <FormLabel className="block ">Account type</FormLabel>
                     <Select onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger>
@@ -139,7 +139,43 @@ export default function InputForm(
               />
             </div>
 
-            {accountType === "state" && (
+          
+
+            <div className="col-span-1">
+              <FormField
+                control={form.control}
+                name="datesSelected"
+                render={({ field }) => (
+                  <FormItem className="flex flex-col items-center">
+                    <FormLabel
+                     className=" block"
+                     >Date Range</FormLabel>
+                    <FormControl>
+                      <DatePickerWithRange
+                        //@ts-ignore
+                        value={field.value} onChange={field.onChange} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="col-span-1 flex flex-row">
+              <FormField
+                control={form.control}
+                name="asinSelected"
+                render={({ field }) => (
+                  <FormItem className="text-center w-full">
+                    <FormLabel className="block">Select ASIN</FormLabel>
+                    <FormControl>
+                      <ComboboxParents selectedAsinParents={field.value} onChange={field.onChange} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+                {accountType === "state" && (
               <div className="col-span-1">
                 <FormField
                   control={form.control}
@@ -156,39 +192,6 @@ export default function InputForm(
                 />
               </div>
             )}
-
-            <div className="col-span-1">
-              <FormField
-                control={form.control}
-                name="datesSelected"
-                render={({ field }) => (
-                  <FormItem className="text-center w-full">
-                    <FormLabel className="block">Date Range</FormLabel>
-                    <FormControl>
-                      <DatePickerWithRange
-                        //@ts-ignore
-                        value={field.value} onChange={field.onChange} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-
-            <div className="col-span-1">
-              <FormField
-                control={form.control}
-                name="asinSelected"
-                render={({ field }) => (
-                  <FormItem className="text-center w-full">
-                    <FormLabel className="block">Select ASIN</FormLabel>
-                    <FormControl>
-                      <ComboboxParents selectedAsinParents={field.value} onChange={field.onChange} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
             </div>
           </div>
           <Button type="submit" className="w-full mt-11">

@@ -90,18 +90,18 @@ interface BLa {
             icon: BarChart,
             variant: "ghost"
           },
-          {
-            title: "Orders",
-            href: "/orders",
-            icon: ShoppingCart,
-            variant: "ghost"
-          },
-          {
-            title: "States",
-            href: "/states",
-            icon: Earth ,
-            variant: "ghost"
-          }
+          // {
+          //   title: "Orders",
+          //   href: "/orders",
+          //   icon: ShoppingCart,
+          //   variant: "ghost"
+          // },
+          // {
+          //   title: "States",
+          //   href: "/states",
+          //   icon: Earth ,
+          //   variant: "ghost"
+          // }
         ]} 
 
         logout={

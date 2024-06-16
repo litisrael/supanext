@@ -1,5 +1,7 @@
 
 import { SimpleLineChart } from "@/components/SimpleLineChart";
+import  {StackedBarChart}  from "@/components/StackedBarChart";
+
 interface ChildComponentProps {
     formData: any;
     responseData: any;
@@ -45,7 +47,8 @@ interface ChildComponentProps {
               return (
                 <div>
                   <h2  className= "text-center text-2xl font-semibold" >Quantity of Orders by states</h2>
-                  <SimpleLineChart data={responseData} />
+                  <StackedBarChart data={responseData} />
+
                 </div>
               ); 
 
