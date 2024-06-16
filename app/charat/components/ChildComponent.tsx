@@ -64,8 +64,8 @@ interface ChildComponentProps {
   
     return (
       <div>
-        <h2>Form Data</h2>
-        <p>{JSON.stringify(formData, null, 2)}</p>
+        {/* <h2>Form Data</h2>
+        <p>{JSON.stringify(formData, null, 2)}</p> */}
   
         {/* <h2>Response Data</h2> */}
         {renderChart()}
