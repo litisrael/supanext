@@ -1,4 +1,6 @@
 import { ComboboxParents } from "@/components/ui/comboboxParents";
+import { ComboboxState } from "@/components/ui/comboboxState";
+
 import { DatePickerWithRange } from "@/components/ui/newCalendarRange";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -38,6 +40,12 @@ const FormSchema = z.object({
   asinSelected: z.string().array().min(1, {
     message: "Please select at least one ASIN.",
   }),
+  selectedState: z.string().array()
+  // .min(1, {
+  //   message: "Please select at least one State.",
+  // })
+  // .optional()
+  , 
   accountType: z.string().min(1, {
     message: "Please select a function type for the chart.",
   }),
@@ -45,12 +53,10 @@ const FormSchema = z.object({
 
 type FormSchemaType = z.infer<typeof FormSchema>;
 
-interface InputFormProps {
-  onFormSubmit: (data: any) => void;
-}
+
 
 export default function InputForm(
-  // { onFormSubmit }: InputFormProps
+
 ) {
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<FormSchemaType | null>(null);
@@ -63,6 +69,7 @@ export default function InputForm(
         from: undefined,
         to: undefined,
       },
+      selectedState:[],
       asinSelected: [],
       accountType: "",
     },
@@ -73,14 +80,21 @@ export default function InputForm(
   async function onSubmit(data: FormSchemaType) {
     try {
       
-      const { datesSelected, asinSelected, accountType } = data;
+      const { datesSelected, asinSelected, accountType
+        , selectedState 
+      } = data;
 
       const queryParams = new URLSearchParams({
         asinSelected: asinSelected.join(','),
         from: datesSelected.from ? datesSelected.from.toISOString() : '',
         to: datesSelected.to ? datesSelected.to.toISOString() : '',
       });
-
+  
+      // Agregar selectedState solo si accountType es "state" y selectedState no está vacío
+      if (accountType === "state" && selectedState.length > 0) {
+        queryParams.append('selectedState', selectedState.join(','));
+      }
+  
       const response = await fetch(`/api/querys/${accountType}?${queryParams.toString()}`);
       const responseData = await response.json();
       console.log(responseData);
@@ -129,12 +143,12 @@ export default function InputForm(
               <div className="col-span-1">
                 <FormField
                   control={form.control}
-                  name="asinSelected"
+                  name="selectedState"
                   render={({ field }) => (
                     <FormItem className="text-center w-full">
                       <FormLabel className="block">Select city</FormLabel>
                       <FormControl>
-                        <ComboboxParents selectedAsinParents={field.value} onChange={field.onChange} />
+                        <ComboboxState selectedState={field.value} onChange={field.onChange} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

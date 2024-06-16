@@ -5,7 +5,7 @@ import { createClient } from "../../../../utils/supabase/server";
 
 interface FormDataParams {
   asinSelected: string[];
-  accountType: string;
+
   datesSelected: {
     from: string;
     to: string;
@@ -25,13 +25,12 @@ export async function GET(req: Request) {
     const { searchParams } = new URL(req.url);
     const asinSelected = searchParams.get("asinSelected")?.split(",");
 
-    const accountType = searchParams.get("accountType");
     const from = searchParams.get("from");
     const to = searchParams.get("to");
 
     const formData: FormDataParams = {
       asinSelected: asinSelected || [],
-      accountType: accountType || "",
+     
       datesSelected: {
         from: from || "",
         to: to || "",

@@ -8,30 +8,47 @@ interface ChildComponentProps {
 
  function ChildComponent({ formData, responseData }: ChildComponentProps) {
     console.log("formData dentro de childe", formData);
+
   
     const renderChart = () => {
       switch (formData.accountType) {
         case "ranksParents":
           return (
             <div>
-              <h1>Ranks Parents Chart</h1>
+              <h2  className= "text-center text-2xl font-semibold" >Product Family Position Range Chart </h2>
               <SimpleLineChart data={responseData} reversed={true} />
             </div>
           );
-        // case "anotherCondition":
-        //   return (
-        //     <div>
-        //       <h1>Another Condition Chart</h1>
-        //       <SimpleLineChart data={responseData} someOtherProp={value} />
-        //     </div>
-        //   );
-        // case "yetAnotherCondition":
-        //   return (
-        //     <div>
-        //       <h1>Yet Another Condition Chart</h1>
-        //       <SimpleLineChart data={responseData} someProp={otherValue} />
-        //     </div>
-        //   );
+        case "grossSalesParent":
+          return (
+            <div>
+              <h2  className= "text-center text-2xl font-semibold" >Gross Billing Amounts (Excluding Tax and Discounts) </h2>
+              <SimpleLineChart data={responseData} />
+            </div>
+          );
+        case "cancelledOrders":
+          return (
+            <div>
+              <h2  className= "text-center text-2xl font-semibold" >Canceled orders</h2>
+              <SimpleLineChart data={responseData} />
+            </div>
+          );
+
+          case "ordersByParent":
+            return (
+              <div>
+                <h2  className= "text-center text-2xl font-semibold" >Quantity of Orders by Product Family</h2>
+                <SimpleLineChart data={responseData} />
+              </div>
+            ); 
+            case "state":
+              return (
+                <div>
+                  <h2  className= "text-center text-2xl font-semibold" >Quantity of Orders by states</h2>
+                  <SimpleLineChart data={responseData} />
+                </div>
+              ); 
+
         default:
           return (
             <div>
@@ -47,7 +64,7 @@ interface ChildComponentProps {
         <h2>Form Data</h2>
         <p>{JSON.stringify(formData, null, 2)}</p>
   
-        <h2>Response Data</h2>
+        {/* <h2>Response Data</h2> */}
         {renderChart()}
       </div>
     );

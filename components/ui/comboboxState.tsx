@@ -24,12 +24,12 @@ type FormValues = {
     from: Date;
     to: Date;
   };
-  asinSelected: string[];
+  selectedState: string[];
 };
 
 type ComboboxParentsProps = {
-  selectedState: ControllerRenderProps<FormValues, "asinSelected">['value'];
-  onChange: ControllerRenderProps<FormValues, "asinSelected">['onChange'];
+  selectedState: ControllerRenderProps<FormValues, "selectedState">['value'];
+  onChange: ControllerRenderProps<FormValues, "selectedState">['onChange'];
 };
 
 export function ComboboxState({
