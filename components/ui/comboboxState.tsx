@@ -18,6 +18,88 @@ import {
 import { cn } from "@/lib/utils"; // Asegúrate de que esta importación es correcta
 import { ControllerRenderProps } from "react-hook-form";
 
+
+const dataState = [
+  { value: "AE", label: "AE" },
+  { value: "ALABAMA", label: "ALABAMA" },
+  { value: "ALASKA", label: "ALASKA" },
+  { value: "ALBERTA", label: "ALBERTA" },
+  { value: "AP", label: "AP" },
+  { value: "ARIZONA", label: "ARIZONA" },
+  { value: "ARKANSAS", label: "ARKANSAS" },
+  { value: "Antioquia", label: "Antioquia" },
+  { value: "BAJA CALIFORNIA", label: "BAJA CALIFORNIA" },
+  { value: "BAJA CALIFORNIA SUR", label: "BAJA CALIFORNIA SUR" },
+  { value: "BRITISH COLUMBIA", label: "BRITISH COLUMBIA" },
+  { value: "CALIFORNIA", label: "CALIFORNIA" },
+  { value: "CHIHUAHUA", label: "CHIHUAHUA" },
+  { value: "COLORADO", label: "COLORADO" },
+  { value: "CONNECTICUT", label: "CONNECTICUT" },
+  { value: "DC", label: "DC" },
+  { value: "DELAWARE", label: "DELAWARE" },
+  { value: "FLORIDA", label: "FLORIDA" },
+  { value: "GEORGIA", label: "GEORGIA" },
+  { value: "HAWAII", label: "HAWAII" },
+  { value: "IDAHO", label: "IDAHO" },
+  { value: "ILLINOIS", label: "ILLINOIS" },
+  { value: "INDIANA", label: "INDIANA" },
+  { value: "IOWA", label: "IOWA" },
+  { value: "KANSAS", label: "KANSAS" },
+  { value: "KENTUCKY", label: "KENTUCKY" },
+  { value: "LOUISIANA", label: "LOUISIANA" },
+  { value: "MAINE", label: "MAINE" },
+  { value: "MANITOBA", label: "MANITOBA" },
+  { value: "MARYLAND", label: "MARYLAND" },
+  { value: "MASSACHUSETTS", label: "MASSACHUSETTS" },
+  { value: "MEXICO", label: "MEXICO" },
+  { value: "MICHIGAN", label: "MICHIGAN" },
+  { value: "MICHOACÁN", label: "MICHOACÁN" },
+  { value: "MINNESOTA", label: "MINNESOTA" },
+  { value: "MISSISSIPPI", label: "MISSISSIPPI" },
+  { value: "MISSOURI", label: "MISSOURI" },
+  { value: "MONTANA", label: "MONTANA" },
+  { value: "MORELOS", label: "MORELOS" },
+  { value: "NEBRASKA", label: "NEBRASKA" },
+  { value: "NEVADA", label: "NEVADA" },
+  { value: "NEW BRUNSWICK", label: "NEW BRUNSWICK" },
+  { value: "NEW HAMPSHIRE", label: "NEW HAMPSHIRE" },
+  { value: "NEW JERSEY", label: "NEW JERSEY" },
+  { value: "NEW MEXICO", label: "NEW MEXICO" },
+  { value: "NEW YORK", label: "NEW YORK" },
+  { value: "NEWFOUNDLAND AND LABRADOR", label: "NEWFOUNDLAND AND LABRADOR" },
+  { value: "NORTH CAROLINA", label: "NORTH CAROLINA" },
+  { value: "NORTH DAKOTA", label: "NORTH DAKOTA" },
+  { value: "NOVA SCOTIA", label: "NOVA SCOTIA" },
+  { value: "OHIO", label: "OHIO" },
+  { value: "OKLAHOMA", label: "OKLAHOMA" },
+  { value: "ONTARIO", label: "ONTARIO" },
+  { value: "OREGON", label: "OREGON" },
+  { value: "PENNSYLVANIA", label: "PENNSYLVANIA" },
+  { value: "PR", label: "PR" },
+  { value: "Pa.", label: "Pa." },
+  { value: "Puerto Rico", label: "Puerto Rico" },
+  { value: "QUEBEC", label: "QUEBEC" },
+  { value: "Qu�bec", label: "Qu�bec" },
+  { value: "RHODE ISLAND", label: "RHODE ISLAND" },
+  { value: "Rizal", label: "Rizal" },
+  { value: "SASKATCHEWAN", label: "SASKATCHEWAN" },
+  { value: "SOUTH CAROLINA", label: "SOUTH CAROLINA" },
+  { value: "SOUTH DAKOTA", label: "SOUTH DAKOTA" },
+  { value: "TENNESSEE", label: "TENNESSEE" },
+  { value: "TEXAS", label: "TEXAS" },
+  { value: "UTAH", label: "UTAH" },
+  { value: "VERMONT", label: "VERMONT" },
+  { value: "VI", label: "VI" },
+  { value: "VIRGINIA", label: "VIRGINIA" },
+  { value: "WASHINGTON", label: "WASHINGTON" },
+  { value: "WEST VIRGINIA", label: "WEST VIRGINIA" },
+  { value: "WISCONSIN", label: "WISCONSIN" },
+  { value: "WYOMING", label: "WYOMING" }
+];
+
+
+
+
 type FormValues = {
   username: string;
   datesSelected: {
@@ -37,16 +119,16 @@ export function ComboboxState({
   onChange,
 }: ComboboxParentsProps) {
   const [open, setOpen] = useState(false);
-  const [dataState, setDataState] = useState<{ label: string; value: string }[]>([]);
+  // const [dataState, setDataState] = useState<{ label: string; value: string }[]>([]);
 
   useEffect(() => {
     const fetchDatesRange = async () => {
-      const response = await fetch("/api/querys/allStates");
-      const data = await response.json();
+      // const response = await fetch("/api/querys/allStates");
+      // const data = await response.json();
+      // setDataState(data);
 
    
       
-      setDataState(data);
     };
 
     fetchDatesRange();

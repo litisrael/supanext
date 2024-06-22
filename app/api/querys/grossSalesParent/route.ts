@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createClient } from "../../../../utils/supabase/server";
-
+import {fetchAsinNames} from '../../fetchUtils'
 interface FormDataParams {
   asinSelected: string[];
   accountType: string;
@@ -30,10 +30,14 @@ export async function GET(req: Request) {
       },
     };
 
-    const data = await fetchRanksParent(supabase, formData);
+    const asinNames = await fetchAsinNames();
+    const {renameSalesParents ,renameSaleschilds } = await fetchRanksParent(supabase, formData,asinNames);
 // console.log("data", data);
-
-    return NextResponse.json(ordenarData(data), { status: 200 });
+    
+return NextResponse.json({
+  parent: ordenarData(renameSalesParents),
+  child: ordenarChildData( renameSaleschilds)
+}, { status: 200 });
   } catch (error) {
     console.error("Error in GET handler:", error);
     return NextResponse.json(
@@ -44,7 +48,8 @@ export async function GET(req: Request) {
 }
  const fetchRanksParent = async (
   supabase: any,
-  formData: FormDataParams
+  formData: FormDataParams,
+  asinNames: { asin_id: string; asin_name: string }[]
 ): Promise<any> => {
   const {
     data: { user },
@@ -57,7 +62,7 @@ export async function GET(req: Request) {
 
   const { asinSelected, datesSelected } = formData;
 
-  const { data: RankParents, error: rpcError } = await supabase.rpc(
+  const { data: salesParent, error: rpcError } = await supabase.rpc(
     "get_gross_sales_parent",
     {
       id_argumento: user.id,
@@ -71,11 +76,43 @@ export async function GET(req: Request) {
     console.error('RPC error:', rpcError);
     throw new Error('Error fetching dates: ' + rpcError.message);
   }
-  if (!RankParents || RankParents.length === 0) {
+  if (!salesParent || salesParent.length === 0) {
     throw new Error('No data found');
   }
 
-  return RankParents;
+
+  const asinNameMap = new Map(asinNames.map((asin: { asin_id: string; asin_name: string }) => [asin.asin_id, asin.asin_name]));
+
+  // Renombrar los ASIN en RankParents con sus nombres correspondientes
+  const renameSalesParents = salesParent.map((item: DataType) => ({
+    ...item,
+    parent_asin: asinNameMap.get(item.parent_asin) || item.parent_asin, // Si no se encuentra el nombre, se mantiene el ASIN original
+  }));
+
+
+
+  const { data: saleschilds, errorSalesChildren } = await supabase.rpc(
+    "get_orders_childs",
+    {
+      id_argumento: user.id,
+      asin_array: asinSelected,
+      start_date: datesSelected.from, // Convertir a cadena de fecha YYYY-MM-DD
+      end_date: datesSelected.to, // Convertir a cadena de fecha YYYY-MM-DD
+    }
+  );
+
+  if (errorSalesChildren) {
+    throw new Error("Error fetching child orders: " + errorSalesChildren.message);
+  }
+
+
+
+  const renameSaleschilds= saleschilds.map((item: DataType) => ({
+    ...item,
+    parent_asin: asinNameMap.get(item.parent_asin) || item.parent_asin, // Si no se encuentra el nombre, se mantiene el ASIN original
+  }));
+
+  return {renameSalesParents ,renameSaleschilds };
 };
 
 
@@ -109,6 +146,45 @@ const ordenarData = (data: DataType[]): ReducedDataType[] => {
   for (const date in reducedData) {
     result.push(reducedData[date]);
   }
+
+  return result;
+};
+
+
+
+
+const ordenarChildData = (data) => {
+  const result  = {};
+
+  data.forEach((item) => {
+    const { order_date, parent_asin, product_name, total_sales } = item;
+
+    if (!result[parent_asin]) {
+      result[parent_asin] = [];
+    }
+
+    const parentData = result[parent_asin];
+
+    let dateEntry = parentData.find((entry) => entry.name === order_date);
+
+    if (!dateEntry) {
+      dateEntry = { name: order_date }
+      // Crear un nuevo objeto que cumpla con ReducedChildDataType
+      const newEntry = {
+        name: order_date,
+        [product_name]: total_sales,
+      };
+
+      parentData.push(newEntry);
+    } else {
+      // Si ya existe la entrada para esa fecha, actualizar el total_sales
+      if (dateEntry[product_name]) {
+        dateEntry[product_name] += total_sales;
+      } else {
+        dateEntry[product_name] = total_sales;
+      }
+    }
+  });
 
   return result;
 };

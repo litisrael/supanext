@@ -25,22 +25,22 @@ type ChartDataType = {
 
 interface SimpleLineChartProps {
   data: ChartDataType[];
-  reversed?: boolean;
+  showLegend?: boolean;
 }
 
 
-export  const StackedBarChart = ({ data = [], reversed = false }: SimpleLineChartProps) => {
-  const [chartData, setChartData] = useState<ChartDataType[]>([]);
+export  const StackedBarChart = ({ data = [], showLegend = true }: SimpleLineChartProps) => {
+  // const [chartData, setChartData] = useState<ChartDataType[]>([]);
 
-  useEffect(() => {
-    if (data) {
-      setChartData(data);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     setChartData(data);
+  //   }
+  // }, [data]);
 
   return (
     <>
-      <div className="w-full h-full min-h-[300px] p-4">
+      <div className="w-full h-full min-h-[300px] ">
       <ResponsiveContainer width="100%" height={400}>
 
    
@@ -58,11 +58,15 @@ export  const StackedBarChart = ({ data = [], reversed = false }: SimpleLineChar
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />
-        <Tooltip />
-        <Legend />
+        <Tooltip position={{ y: 200 }} />
+        {showLegend && 
+        <Legend
+        // wrapperStyle={{ fontSize: '12px' }} // Ejemplo de ajuste de tamaño de fuente  
+        />
+      }
         
-        {chartData.length > 0 &&
-          Object.keys(chartData[0]).filter(key => key !== "name").map((key) => (
+        {data.length > 0 &&
+          Object.keys(data[0]).filter(key => key !== "name").map((key) => (
             <Bar
               key={key}
              stackId="a"

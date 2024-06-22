@@ -97,7 +97,7 @@ export default function InputForm(
   
       const response = await fetch(`/api/querys/${accountType}?${queryParams.toString()}`);
       const responseData = await response.json();
-      console.log(responseData);
+      // console.log(responseData);
       setFormData(data); // Guardar datos del formulario
       setResponseData(responseData); // Guardar datos de la respuesta
     } catch (error) {
@@ -167,7 +167,7 @@ export default function InputForm(
                 name="asinSelected"
                 render={({ field }) => (
                   <FormItem className="text-center w-full">
-                    <FormLabel className="block">Select ASIN</FormLabel>
+                    <FormLabel className="block">Select Family ASIN</FormLabel>
                     <FormControl>
                       <ComboboxParents selectedAsinParents={field.value} onChange={field.onChange} />
                     </FormControl>

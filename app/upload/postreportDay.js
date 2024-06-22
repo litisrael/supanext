@@ -73,6 +73,14 @@ export const uploadDataOrders = async (dataToInsert) => {
 
   console.log('Inserción exitosa en la tabla "gift" en Supabase. Registros insertados:', giftData);
 
+
+
+  
+
+
+
+
+
   } catch (error) {
     console.error(error.message);
   }

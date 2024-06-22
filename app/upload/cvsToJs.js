@@ -15,9 +15,29 @@ export function csvToJs(csv) {
     .split(delimiter)
     .map((column) => column.replaceAll("-", "_"));
 
-  // headers.push("id", "day", "month");
 
-  
+    // console.log("la ultima linea", lines[3]);
+    // console.log("que es " ,typeof  lines[3]);
+    // console.log("es mas de 0 ? " ,lines[3].trim().length > 0);
+    
+
+
+  function removeTrailingEmptyLines(lines, index) {
+    if (index < 0) return;
+
+    if (!hasPrintableCharacters(lines[index])) {
+      lines.pop();
+      removeTrailingEmptyLines(lines, index - 1);
+    }
+  }
+
+  // Función para verificar si una línea tiene caracteres imprimibles
+  function hasPrintableCharacters(line) {
+    return line.trim().length > 0;
+  }
+
+  // Llamada inicial a la función recursiva desde el último renglón
+  removeTrailingEmptyLines(lines, lines.length - 1);
 
   for (let i = 1; i < lines.length; i++) {
     const obj = {};

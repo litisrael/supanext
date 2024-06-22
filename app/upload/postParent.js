@@ -50,6 +50,21 @@ export const uploadDataParents = async (dataToInsert) => {
  
 
 
+
+
+    const { data: child, error: childError } = await supabase
+      .from('childs')
+      .upsert(dataToInsert.childsArray)
+      .select();
+
+    if (salesRanksError) {
+      throw new Error('Error al insertar datos en la tabla salesRanks en Supabase: ' + childError.message);
+    }
+    console.log('Inserción exitosa en la tabla sales_ranks_parents en Supabase. Registros insertados:', child);
+ 
+
+
+
   } catch (error) {
     console.error(error.message);
   }

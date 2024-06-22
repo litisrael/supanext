@@ -24,18 +24,18 @@ interface SimpleLineChartProps {
 }
 
 export const SimpleLineChart = ({ data = [], reversed = false }: SimpleLineChartProps) => {
-  const [chartData, setChartData] = useState<ChartDataType[]>([]);
+  // const [chartData, setChartData] = useState<ChartDataType[]>([]);
   
-  useEffect(() => {
-    if (data) {
-      setChartData(data);
-    }
-  }, [data]);
+  // useEffect(() => {
+  //   if (data) {
+  //     setChartData(data);
+  //   }
+  // }, [data]);
 
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart
-        data={chartData}
+        data={data}
         margin={{
           top: 5,
           right: 30,
@@ -61,9 +61,13 @@ export const SimpleLineChart = ({ data = [], reversed = false }: SimpleLineChart
         />
         <CartesianGrid strokeDasharray="3 3" />
         <Tooltip />
-        <Legend />
-        {chartData.length > 0 &&
-          Object.keys(chartData[0]).filter(key => key !== "name").map((key) => (
+        <Legend  
+        
+          //  wrapperStyle={{ fontSize: '12px' }} // Ejemplo de ajuste de tamaño de fuente
+       
+        />
+        {data.length > 0 &&
+          Object.keys(data[0]).filter(key => key !== "name").map((key) => (
             <Line
               key={key}
               type="monotone"

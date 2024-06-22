@@ -1,5 +1,5 @@
 // me falta mapearlo por si se repite el mismo codigo
-import { NameOfParent } from "./parendYChilds";
+// import { NameOfParent } from "./parendYChilds";
 import { createClient } from '@/utils/supabase/client'
 import { normalizeState } from "./stateNormalizer";
 
@@ -39,9 +39,11 @@ console.log("filteredTable", filteredTable);
 
     currentOrder.user_id = user.id;
      currentOrder.id = `${currentOrder.amazon_order_id}@${currentOrder.sku}`;
-    // currentOrder.day = parsearDay(currentOrder.purchase_date);
-    // currentOrder.month = parsearMonth(currentOrder.purchase_date);
-     currentOrder.parent =NameOfParent(currentOrder.asin)
+
+// hau una columna parent que podriamos usarla para saber a que padre es 
+//solo sirve si en la misma fecha ya hay una tabla parent y revisar a  que 
+// corresponde
+    //  currentOrder.parent =NameOfParent(currentOrder.asin)
     currentOrder.quantity = parseInt(currentOrder.quantity);
     currentOrder.currency = currentOrder.currency;
     currentOrder.ship_country = currentOrder.ship_country;

@@ -12,11 +12,16 @@ export async function processAndOrganizeData(data) {
     parentsArray: [],
     ranksArray: [],
     salesRanksArray: [],
+    
+    childsArray: []
 
   };
 
   const { isoString, parents, childs } = data;
-
+  
+  const date = isoString.split("T")[0]
+  
+  
   for (const asin in parents) {
     const parent = parents[asin];
     const parent_id = `${isoString.split(".")[0]}@${asin}`;
@@ -29,51 +34,9 @@ export async function processAndOrganizeData(data) {
         //variations = parent.variations[0].asins.join(', ');
     }
     // Add to parents array
-    console.log(variations);
+    // console.log(variations);
     tables.parentsArray.push({ parent_id, asin, isoString, user_id,variations });
 
-    // if (parent.variations) {
-    //     parent.variations.forEach((variation) => {
-  
-     
-    //       tables.parentsArray.push({
-    //         // parent_id,
-    //         // asin: parent.asin,
-    //         // market_place_id: variation.marketplaceId,
-    //         variation_data: variation.asins,
-    //       });
-    //     });
-    //   }
-    // Add to ranks array
-    // if (parent.ranks) {
-    //   parent.ranks.forEach((rank) => {
-    //     tables.ranksArray.push({
-    //       parent_id,
-    //       marketplaceId: rank.marketplaceId,
-    //       type: "rank",
-    //       title: rank.title,
-    //       link: rank.link,
-    //       value: rank.value,
-    //       rank: rank.rank,
-    //     });
-    //   });
-    // }
-
-    // Add to salesRanks array
-    // if (parent.salesRanks) {
-    //   parent.salesRanks.forEach((rank) => {
-    //     console.log("cada salesRank osea rank",rank);
-    //     tables.salesRanksArray.push({
-    //       parent_id,
-    //       marketplaceId: rank.marketplaceId,
-     
-    //       title: rank.rank.title,
-    //       link:  rank.rank.link,
-    //       value:  rank.rank.value,
-    //       rank: rank.rank,
-    //     });
-    //   });
-    // }
 
     if (parent.salesRanks) {
         parent.salesRanks.forEach(salesRank => {
@@ -101,36 +64,18 @@ export async function processAndOrganizeData(data) {
 
   }
 
-//   console.log("tables.salesRanksArray",tables.salesRanksArray)
 
-  //     for (const asin in childs) {
-  //         const child = childs[asin];
-  //         const parent_id = `${isoString.split('.')[0]}@${asin}`;
 
-  //         // Add to parents array
-  //         parentsArray.push({ parent_id, asin, isoString });
+  for (const asin in childs) {
+    const child = childs[asin];
+    const { asin: asin_child, childParent: asin_parent } = child;
+    const child_id = `${date}@${asin}`;
+    // const child_id = `${isoString.split(".")[0]}@${asin}`;
+    const user_id = user.id;
+    tables.childsArray.push({user_id,child_id, asin_child, asin_parent ,date });
+  }
 
-  //         // Add to ranks array
-  //         if (child.ranks) {
-  //             child.ranks.forEach(rank => {
-  //                 ranksArray.push({ parent_id, marketplaceId: rank.marketplaceId, type: 'rank', title: rank.title, link: rank.link, value: rank.value, rank: rank.rank });
-  //             });
-  //         }
 
-  //         // Add to salesRanks array
-  //         if (child.salesRanks) {
-  //             child.salesRanks.forEach(rank => {
-  //                 salesRanksArray.push({ parent_id, marketplaceId: rank.marketplaceId, type: 'salesRank', title: rank.title, link: rank.link, value: rank.value, rank: rank.rank });
-  //             });
-  //         }
-
-  //         // Add to variations array
-  //         if (child.variations) {
-  //             child.variations.forEach(variation => {
-  //                 variationsArray.push({ parent_id, variation_data: variation });
-  //             });
-  //         }
-  //     }
 
   return tables;
 }
