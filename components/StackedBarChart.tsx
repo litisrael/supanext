@@ -9,9 +9,10 @@ import {
   Tooltip,
   Legend,
   AreaChart,
-  Area,ResponsiveContainer
+  Area,ResponsiveContainer,
+  TooltipProps
 } from "recharts";
-import { useState, useEffect } from "react";
+import { useState, useEffect , useMemo} from "react";
 
 import { generateRandomColor } from "../utils/generateRandomColor.js";
 
@@ -38,6 +39,43 @@ export  const StackedBarChart = ({ data = [], showLegend = true }: SimpleLineCha
   //   }
   // }, [data]);
 
+
+
+  const barColors = useMemo(() => 
+    data.length > 0
+      ?  Object.keys(data[0]).filter(key => key !== "name").map((key) => (
+        <Bar
+          key={key}
+         stackId="a"
+          dataKey={key}
+          fill={generateRandomColor()}
+          // activeDot={{ r: 8 }}
+          />
+        ))
+    : [],
+[data] // Dependencia de useMemo: actualiza cuando cambia 'data'
+);
+
+
+const CustomTooltip: React.FC<TooltipProps<string, string>> = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white p-2 border border-gray-300 rounded shadow-lg max-w-xs max-h-40 overflow-auto">
+        <p className="font-bold mb-2">{label}</p>
+        <ul>
+          {payload.map((entry, index) => (
+            <li key={`item-${index}`} className="text-sm" style={{ color: entry.color }}>
+              {`${entry.name}: ${entry.value}`}
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
+  return null;
+};
+
+
   return (
     <>
       <div className="w-full h-full min-h-[300px] ">
@@ -58,25 +96,25 @@ export  const StackedBarChart = ({ data = [], showLegend = true }: SimpleLineCha
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" />
         <YAxis />
-        <Tooltip position={{ y: 200 }} />
+        <Tooltip position={{ y: 200 }} content={CustomTooltip} />
         {showLegend && 
         <Legend
         // wrapperStyle={{ fontSize: '12px' }} // Ejemplo de ajuste de tamaño de fuente  
         />
       }
         
-        {data.length > 0 &&
+        {/* {data.length > 0 &&
           Object.keys(data[0]).filter(key => key !== "name").map((key) => (
             <Bar
               key={key}
              stackId="a"
               dataKey={key}
-              fill={generateRandomColor()}
+              fill={barColors[key]}
               // activeDot={{ r: 8 }}
             />
-          ))}
+          ))} */}
         
- 
+ {barColors}
       </BarChart>
       </ResponsiveContainer>
       </div>

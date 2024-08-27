@@ -9,9 +9,9 @@ type Props = {};
 
 import {
   ShoppingCart,
-  CircleDollarSign,
+  LineChart,
   Earth ,
-  UsersRound,
+  Upload,
   Settings,
   ChevronRight,
   LogOut,
@@ -74,7 +74,7 @@ interface BLa {
           {
             title: "Upload",
             href: "/upload",
-            icon: Settings,
+            icon: Upload,
             variant: "ghost"
           },
           // {
@@ -87,7 +87,7 @@ interface BLa {
           {
             title: "Charat",
             href: "/charat",
-            icon: BarChart,
+            icon: LineChart ,
             variant: "ghost"
           },
           // {
@@ -96,12 +96,12 @@ interface BLa {
           //   icon: ShoppingCart,
           //   variant: "ghost"
           // },
-          // {
-          //   title: "States",
-          //   href: "/states",
-          //   icon: Earth ,
-          //   variant: "ghost"
-          // }
+          {
+            title: "Settings",
+            href: "/settings",
+            icon: Settings ,
+            variant: "ghost"
+          }
         ]} 
 
         logout={

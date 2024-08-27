@@ -7,7 +7,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "../lib/utils";
 import SideNavbar from "@/components/SideNavbar";
-import { ColorSchemeScript, MantineProvider } from "@mantine/core";
 import signOut  from "./signOut";
 import Login from "./login/page";
 const defaultUrl = process.env.VERCEL_URL
@@ -61,9 +60,9 @@ export default async function RootLayout({
           {/* main page */}
           <div className="p-8 w-full">
             {" "}
-            {/* <MantineProvider> */}
+   
               {children}
-            {/* </MantineProvider> */}
+      
           </div>
         </body>
       )}

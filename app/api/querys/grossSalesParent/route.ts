@@ -92,7 +92,7 @@ return NextResponse.json({
 
 
   const { data: saleschilds, errorSalesChildren } = await supabase.rpc(
-    "get_orders_childs",
+    "get_gross_sales_childs",
     {
       id_argumento: user.id,
       asin_array: asinSelected,

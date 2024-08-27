@@ -19,7 +19,8 @@ export async function GET(req :Request ) {
 }
 
 interface DateItem {
-  asin: string;
+  asin_id: string;
+  asin_name: string;
   // Otros campos si los hay
 }
 const fetchRangeDates = async (supabase : any ) => {
@@ -28,24 +29,26 @@ const fetchRangeDates = async (supabase : any ) => {
     if (userError) {
       throw new Error('Error fetching user: ' + userError.message);
     }
+
+    let { data: asin_parent_names, error } = await supabase
+    .from('asin_parent_names')
+    .select('*').eq("user_id", user.id)
+            
+      // { id_argumento: user.id }
+    
   
-    const { data: dates, error: rpcError } = await supabase.rpc(
-      "all_parents",
-      { id_argumento: user.id }
-    );
-  
-    if (rpcError) {
-      console.error('RPC error:', rpcError); // Debugging line
-      throw new Error('Error fetching dates: ' + rpcError.message);
+    if (error) {
+      console.error('RPC error:', error); // Debugging line
+      throw new Error('Error fetching dates: ' + error.message);
     }
   
-    if (!dates || dates.length === 0) {
+    if (!asin_parent_names || asin_parent_names.length === 0) {
       throw new Error('No dates found');
     }
   
-    const formattedArray = dates.map((item: DateItem) => ({
-        value: item.asin,
-        label: item.asin
+    const formattedArray = asin_parent_names.map((item: DateItem) => ({
+        value: item.asin_id,
+        label: item.asin_name
     }));
     
     return formattedArray

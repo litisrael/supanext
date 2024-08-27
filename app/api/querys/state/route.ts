@@ -63,7 +63,7 @@ const fetchQuantityOrdersByState = async (
 
   const { asinSelected, datesSelected, selectedState } = formData;
 
-  const { data, error } = await supabase.rpc("get_quantity_orders_by_state", {
+  const { data, error } = await supabase.rpc("get_quantity_orders_by_state_parent", {
     id_argumento: user.id,
     asin_array: asinSelected,
     start_date: datesSelected.from,

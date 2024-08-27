@@ -67,7 +67,7 @@ function ChildComponent({ formData, responseData }: ChildComponentProps) {
                 <h2 className="text-center text-2xl font-semibold">
                   Quantity of Orders for {parentAsin}
                 </h2>
-                <StackedBarChart data={responseData.child[parentAsin]} />
+                <StackedBarChart  showLegend={false} data={responseData.child[parentAsin]} />
               </div>
             ))}
           </div>

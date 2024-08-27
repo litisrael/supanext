@@ -128,6 +128,7 @@ export default function InputForm(
                         <SelectItem value="ordersByParent">Orders</SelectItem>
                         <SelectItem value="cancelledOrders">Orders Cancelled</SelectItem>
                         <SelectItem value="ranksParents">Rating Parents</SelectItem>
+                        <SelectItem value="Profit">Profit per Product</SelectItem>
                         <SelectItem value="state">
                           Orders By City
                         </SelectItem>

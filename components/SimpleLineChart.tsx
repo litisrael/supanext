@@ -8,7 +8,7 @@ import {
   Tooltip,
   Legend
 } from "recharts";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { generateRandomColor } from "../utils/generateRandomColor.js";
 
 type ChartDataType = {
@@ -32,6 +32,22 @@ export const SimpleLineChart = ({ data = [], reversed = false }: SimpleLineChart
   //   }
   // }, [data]);
 
+  const lines = useMemo( () =>
+      data.length > 0
+        ? Object.keys(data[0])
+            .filter((key) => key !== 'name')
+            .map((key) => (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                stroke={generateRandomColor()} // Genera un color aleatorio
+                activeDot={{ r: 8 }}
+              />
+            ))
+        : [],
+    [data] // Dependencia de useMemo: actualiza cuando cambia 'data'
+  );
   return (
     <ResponsiveContainer width="100%" height={300}>
       <LineChart
@@ -66,7 +82,9 @@ export const SimpleLineChart = ({ data = [], reversed = false }: SimpleLineChart
           //  wrapperStyle={{ fontSize: '12px' }} // Ejemplo de ajuste de tamaño de fuente
        
         />
-        {data.length > 0 &&
+
+        {lines}
+        {/* {data.length > 0 &&
           Object.keys(data[0]).filter(key => key !== "name").map((key) => (
             <Line
               key={key}
@@ -75,7 +93,7 @@ export const SimpleLineChart = ({ data = [], reversed = false }: SimpleLineChart
               stroke={generateRandomColor()}
               activeDot={{ r: 8 }}
             />
-          ))}
+          ))} */}
       </LineChart>
     </ResponsiveContainer>
   );
