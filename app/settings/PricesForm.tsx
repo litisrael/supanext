@@ -21,6 +21,7 @@ interface PricesItem {
 
 const supabase = createClient();
 
+
 export const PricesForm = () => {
     const [pricesItems, setPricesItems] = useState<PricesItem[]>([]);
     const [updatedPrices, setUpdatedPrices] = useState<{ [sku: number]: number }>({});
