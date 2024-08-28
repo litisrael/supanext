@@ -103,6 +103,9 @@ export const AsinForm = () => {
           {message.text}
         </Alert>
       )}
+      <div
+      className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-4">
+
       {asinNames.map(({ asin_id, asin_name }) => (
         <Card key={asin_id} className="mb-4">
           <CardHeader>
@@ -118,10 +121,11 @@ export const AsinForm = () => {
               value={updatedAsinNames[asin_id] ?? asin_name}
               onChange={e => handleInputChange(asin_id, e.target.value)}
               className="mt-1 block w-full"
-            />
+              />
           </CardContent>
         </Card>
       ))}
+      </div>
      
     </div>
   );

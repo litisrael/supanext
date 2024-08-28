@@ -7,22 +7,27 @@ import {
 } from "@/components/ui/accordion";
 import { AsinForm } from "./AsinForm";
 import { PricesForm } from "./PricesForm";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+
 const Bla = () => {
+ 
+ 
   return (
-    <Accordion type="single" collapsible>
-      <AccordionItem value="item-1">
-        <AccordionTrigger>click to  change name of asin Family (parent)</AccordionTrigger>
-        <AccordionContent>
-        <AsinForm />
-        </AccordionContent>
-      </AccordionItem>
-      <AccordionItem value="item-2">
-        <AccordionTrigger >click to  add or modify item prices</AccordionTrigger>
-        <AccordionContent>
-        <PricesForm />
-        </AccordionContent>
-      </AccordionItem>
-    </Accordion>
+
+
+<Tabs defaultValue="cost" >
+  <TabsList>
+<TabsTrigger value="cost">Modify item cost</TabsTrigger>
+<TabsTrigger value="Names of asin Family">Modify names of asin Family</TabsTrigger>
+</TabsList>
+   <TabsContent value="Names of asin Family">Make changes of asin names 
+   <AsinForm />
+    </TabsContent>
+    <TabsContent value="cost">cost of items
+   <PricesForm />
+    </TabsContent>
+    </Tabs>
   );
 }
 

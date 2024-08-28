@@ -15,7 +15,7 @@ interface PricesItem {
     sku: number;
     product_name: string;
     asin: string;
-    purchase_price: number | null;
+    purchase_cost: number | null;
     user_id: string;
 }
 
@@ -27,15 +27,17 @@ export const PricesForm = () => {
     const [loading, setLoading] = useState(true);
     const [message, setMessage] = useState<{ type: 'success' | 'error', text: string } | null>(null);
     const [filterNotPrice, setFilterNotPrice] = useState<boolean>(false);
+    // const [itemsWithoutCost, setItemsWithoutCost] = useState<PricesItem[]>([]);
+    
+    console.log("updatedPrices",updatedPrices);
 
-
-console.log("updatedPrices",updatedPrices);
-
-console.log("pricesItems",pricesItems);
 
 const filteredItems = filterNotPrice
-    ? pricesItems.filter((item) => item.purchase_price == null)
+    ? pricesItems.filter((item) => item.purchase_cost == null)
     : pricesItems;
+
+
+
 
     useEffect(() => {
         const fetchPricesItems = async () => {
@@ -57,6 +59,17 @@ const filteredItems = filterNotPrice
         fetchPricesItems();
     }, []);
 
+
+  
+    // useEffect(() => {
+    //     // Filtrar los elementos con `purchase_cost` igual a `null`
+    //     const bla = pricesItems.filter(item => item.purchase_cost === null);
+    //     // Actualizar el estado con los elementos filtrados
+    //     setItemsWithoutCost(bla);
+    // }, [pricesItems]); // El efecto se ejecutará cada vez que `pricesItems` cambie
+    
+
+
     const handleInputChange = (sku: number, newPrice: number) => {
         setUpdatedPrices(prev => ({
             ...prev,
@@ -70,7 +83,7 @@ const filteredItems = filterNotPrice
         setMessage({ type: 'error', text: `The price for the SKU ${sku} you haven't changed it` });
         return;
     }
-    const currentPrice = pricesItems.find(item => item.sku === sku)?.purchase_price;
+    const currentPrice = pricesItems.find(item => item.sku === sku)?.purchase_cost;
 
     // Verificar si el precio es el mismo
     if (updatedPrices[sku] === currentPrice) {
@@ -81,8 +94,8 @@ const filteredItems = filterNotPrice
 
         try {
             const { data, error } = await supabase
-                .from('prices_items')
-                .update({ purchase_price: updatedPrices[sku] })
+                .from('cost_items')
+                .update({ purchase_cost: updatedPrices[sku] })
                 .eq('sku', sku);
 
 
@@ -91,7 +104,7 @@ const filteredItems = filterNotPrice
             } else {
                 setPricesItems(prev =>
                     prev.map(item =>
-                        item.sku === sku ? { ...item, purchase_price: updatedPrices[sku] } : item
+                        item.sku === sku ? { ...item, purchase_cost: updatedPrices[sku] } : item
                     )
                 );
                     setMessage({ type: 'success', text: `Price updated successfully ${sku}  $${updatedPrices[sku]}` });
@@ -128,7 +141,7 @@ const filteredItems = filterNotPrice
                 </Alert>
             )}
 
-            <div className="container mx-auto p-4">
+          <div className="flex flex-col gap-5  w-full">
              <div className="flex items-center space-x-2 mb-4">
        
         <label
@@ -146,8 +159,11 @@ const filteredItems = filterNotPrice
 
                 <h1 className="text-2xl font-bold mb-4">List of product unit costs:</h1>
            
+<div 
+className="grid w-full grid-cols-1 gap-4 gap-x-8 transition-all sm:grid-cols-2 xl:grid-cols-4">
 
-                {filteredItems.map(({ sku, product_name, asin, purchase_price }) => (
+    
+                {filteredItems.map(({ sku, product_name, asin, purchase_cost }) => (
                     <Card key={sku} className="mb-4">
                         <CardHeader>
                             <CardTitle>
@@ -158,21 +174,22 @@ const filteredItems = filterNotPrice
                         <CardContent>
                             <p className="text-gray-500">Product Name: {product_name}</p>
                             <Label htmlFor={`inputPrice_${sku}`} className="block mt-4 text-sm font-medium text-gray-700">
-                                Price:
+                            Cost usd:
                             </Label>
                             <div className="flex">
                                 <Input
                                     id={`inputPrice_${sku}`}
                                     type="number"
-                                    value={updatedPrices[sku] !== undefined ? updatedPrices[sku] : (purchase_price ?? '')}
+                                    value={updatedPrices[sku] !== undefined ? updatedPrices[sku] : (purchase_cost ?? '')}
                                     onChange={(e) => handleInputChange(sku, parseFloat(e.target.value))}
                                     className="mt-1 block w-full"
-                                />
+                                    />
                                 <Button onClick={() => handleUpdatePrice(sku)} className="ml-2">Update</Button>
                             </div>
                         </CardContent>
                     </Card>
                 ))}
+                </div>
             </div>
         </>
     );
